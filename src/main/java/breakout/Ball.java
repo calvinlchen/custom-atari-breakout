@@ -14,11 +14,11 @@ public class Ball {
   public static final int BALL_SIZE = 20;
 
   // JFX representation on the screen
-  private ImageView myView;
+  private final ImageView myView;
   private Point2D myVelocity;
   // Start position of the ball (based on Scene size)
-  private double start_x;
-  private double start_y;
+  private final double start_x;
+  private final double start_y;
 
   public Ball (Image image, int screenWidth, int screenHeight) {
     myView = new ImageView(image);
@@ -26,9 +26,9 @@ public class Ball {
     myView.setFitHeight(BALL_SIZE);
     // start ball near the middle-bottom of the Scene
     myView.setX((BALL_SIZE + screenWidth - BALL_SIZE) / 2.0);
-    start_x = myView.getX();
+    start_x = getX();
     myView.setY((screenHeight / 9.0) * 7);
-    start_y = myView.getY();
+    start_y = getY();
     // default to BALL_SPEED speed in both the x and y directions
     myVelocity = new Point2D(BALL_SPEED, -BALL_SPEED);
   }
@@ -40,8 +40,8 @@ public class Ball {
    * @author Robert C. Duvall
    */
   public void move (double elapsedTime) {
-    myView.setX(myView.getX() + myVelocity.getX() * elapsedTime);
-    myView.setY(myView.getY() + myVelocity.getY() * elapsedTime);
+    myView.setX(getX() + myVelocity.getX() * elapsedTime);
+    myView.setY(getY() + myVelocity.getY() * elapsedTime);
   }
 
   /**
@@ -50,11 +50,11 @@ public class Ball {
    * @author Robert C. Duvall
    */
   public void bounceEdge (double screenWidth, double screenHeight) {
-    if (myView.getX() < 0 || myView.getX() > screenWidth - getWidth()) {
+    if (getX() < 0 || getX() > screenWidth - getWidth()) {
       reverseXSpeed();
     }
     // simulate bounce off the ceiling wall by simply reversing Y speed
-    if (myView.getY() <= 0) {
+    if (getY() <= 0) {
       reverseYSpeed();
     }
   }
@@ -66,8 +66,8 @@ public class Ball {
     // paddle is treated as a line with 0 thickness
     if (paddle.getX() <= getCenterX()
         && paddle.getX() + paddle.getWidth() >= getCenterX()
-        && myView.getY() <= paddle.getY()
-        && myView.getY() + getHeight() >= paddle.getY()) {
+        && getY() <= paddle.getY()
+        && getY() + getHeight() >= paddle.getY()) {
       reverseYSpeed();
     }
   }
@@ -83,7 +83,7 @@ public class Ball {
    * Returns true when ball is at or below the floor (bottom edge) of screen
    */
   public boolean isContactingFloor (double screenHeight) {
-    return myView.getY() + myView.getFitHeight() > screenHeight;
+    return getY() + getHeight() > screenHeight;
   }
 
   /**
@@ -110,28 +110,42 @@ public class Ball {
   /**
    * Get the width of the ImageView representing the ball
    */
-  private double getWidth() {
+  public double getWidth() {
     return myView.getBoundsInLocal().getWidth();
   }
 
   /**
    * Get the width of the ImageView representing the ball
    */
-  private double getHeight() {
+  public double getHeight() {
     return myView.getBoundsInLocal().getHeight();
+  }
+
+  /**
+   * Get the x-position of the top-left corner of the ImageView representing the ball
+   */
+  public double getX() {
+    return myView.getX();
+  }
+
+  /**
+   * Get the y-position of the top-left corner of the ImageView representing the ball
+   */
+  public double getY() {
+    return getY();
   }
 
   /**
    * Get the x-coordinate of the center of the ball
    */
-  private double getCenterX() {
-    return myView.getX() + (myView.getFitWidth() / 2);
+  public double getCenterX() {
+    return getX() + (myView.getFitWidth() / 2);
   }
 
   /**
    * Get the y-coordinate of the center of the ball
    */
-  private double getCenterY() {
+  public double getCenterY() {
     return myView.getY() + (myView.getFitHeight() / 2);
   }
 

@@ -136,7 +136,7 @@ public class Ball {
    * Get the y-position of the top-left corner of the ImageView representing the ball
    */
   public double getY() {
-    return getY();
+    return myView.getY();
   }
 
   /**

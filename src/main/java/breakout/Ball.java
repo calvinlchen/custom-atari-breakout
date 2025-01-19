@@ -49,7 +49,7 @@ public class Ball {
    *
    * @author Robert C. Duvall
    */
-  public void bounceEdge (double screenWidth, double screenHeight) {
+  public void bounceOffEdge(double screenWidth, double screenHeight) {
     if (getX() < 0 || getX() > screenWidth - getWidth()) {
       reverseXSpeed();
     }
@@ -62,7 +62,7 @@ public class Ball {
   /**
    * Bounce off the paddle if contacting the paddle from above or below
    */
-  public void bouncePaddle (Paddle paddle) {
+  public void bounceOffPaddle(Paddle paddle) {
     // paddle is treated as a line with 0 thickness
     if (paddle.getX() <= getCenterX()
         && paddle.getX() + paddle.getWidth() >= getCenterX()
@@ -75,8 +75,12 @@ public class Ball {
   /**
    * Bounce off a block if contacting any edge of the block
    */
-  public void bounceBlock (Block block) {
-
+  public void bounceOffBlock(Block block) {
+    if (block.shouldBounceTopEdge(this) || block.shouldBounceBottomEdge(this)) {
+      reverseYSpeed();
+    } else if (block.shouldBounceRightEdge(this) || block.shouldBounceLeftEdge(this)) {
+      reverseXSpeed();
+    }
   }
 
   /**

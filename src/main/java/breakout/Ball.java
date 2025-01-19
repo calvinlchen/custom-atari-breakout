@@ -50,7 +50,7 @@ public class Ball {
    * @author Robert C. Duvall
    */
   public void bounceEdge (double screenWidth, double screenHeight) {
-    if (myView.getX() < 0 || myView.getX() > screenWidth - getViewWidth()) {
+    if (myView.getX() < 0 || myView.getX() > screenWidth - getWidth()) {
       reverseXSpeed();
     }
     // simulate bounce off the ceiling wall by simply reversing Y speed
@@ -60,16 +60,23 @@ public class Ball {
   }
 
   /**
-   * Bounce off the paddle when contacting any edge of the paddle
+   * Bounce off the paddle if contacting the paddle from above or below
    */
   public void bouncePaddle (Paddle paddle) {
     // paddle is treated as a line with 0 thickness
-    if (paddle.getX() <= myView.getX()+myView.getFitWidth()/2
-        && paddle.getX()+paddle.getWidth() >= myView.getX()+myView.getFitWidth()/2
+    if (paddle.getX() <= getCenterX()
+        && paddle.getX() + paddle.getWidth() >= getCenterX()
         && myView.getY() <= paddle.getY()
-        && myView.getY()+getViewHeight() >= paddle.getY()) {
+        && myView.getY() + getHeight() >= paddle.getY()) {
       reverseYSpeed();
     }
+  }
+
+  /**
+   * Bounce off a block if contacting any edge of the block
+   */
+  public void bounceBlock (Block block) {
+
   }
 
   /**
@@ -103,15 +110,29 @@ public class Ball {
   /**
    * Get the width of the ImageView representing the ball
    */
-  private double getViewWidth() {
+  private double getWidth() {
     return myView.getBoundsInLocal().getWidth();
   }
 
   /**
    * Get the width of the ImageView representing the ball
    */
-  private double getViewHeight() {
+  private double getHeight() {
     return myView.getBoundsInLocal().getHeight();
+  }
+
+  /**
+   * Get the x-coordinate of the center of the ball
+   */
+  private double getCenterX() {
+    return myView.getX() + (myView.getFitWidth() / 2);
+  }
+
+  /**
+   * Get the y-coordinate of the center of the ball
+   */
+  private double getCenterY() {
+    return myView.getY() + (myView.getFitHeight() / 2);
   }
 
   /**

@@ -46,6 +46,13 @@ public class Paddle {
   }
 
   /**
+   * Returns the width of paddle
+   */
+  public int getWidth() {
+    return PADDLE_WIDTH;
+  }
+
+  /**
    * Move paddle left if not contacting left screen edge (else, do not move).
    * elapsedTime is used to ensure consistent speed across different machines. (Robert C. Duvall)
    */

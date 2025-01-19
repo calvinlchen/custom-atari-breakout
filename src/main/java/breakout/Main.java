@@ -34,6 +34,7 @@ public class Main extends Application {
     public static final String BALL_IMAGE = "/ball/basketball.png";
 
     private List<Ball> myBalls;
+    private List<Block> myBlocks;
 
     /**
      * Initialize what will be displayed.
@@ -41,13 +42,25 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         Paddle paddle = new Paddle(SCENE_WIDTH, SCENE_HEIGHT);
+
         Ball ball = new Ball(new Image(getClass().getResourceAsStream(BALL_IMAGE)), SCENE_WIDTH, SCENE_HEIGHT);
         myBalls = new ArrayList<>();
         myBalls.add(ball);
 
+        myBlocks = new ArrayList<>();
+        Block block = new Block(400, 400, 300, 80, 1);
+        myBlocks.add(block);
+        block = new Block(800, 200, 400, 60, 1);
+        myBlocks.add(block);
+
         Group root = new Group();
         root.getChildren().add(paddle.getShape());
-        root.getChildren().add(ball.getView());
+        for (Ball b : myBalls) {
+            root.getChildren().add(b.getView());
+        }
+        for (Block b : myBlocks) {
+            root.getChildren().add(b.getShape());
+        }
 
         Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT, DUKE_BLUE);
         stage.setScene(scene);
@@ -69,8 +82,13 @@ public class Main extends Application {
 
     private void step (Paddle p, double elapsedTime) {
         for (Ball b : myBalls) {
-            b.bounceEdge(SCENE_WIDTH, SCENE_HEIGHT);
-            b.bouncePaddle(p);
+            b.bounceOffEdge(SCENE_WIDTH, SCENE_HEIGHT);
+            b.bounceOffPaddle(p);
+
+            for (Block block : myBlocks) {
+                b.bounceOffBlock(block);
+            }
+
             b.move(elapsedTime);
             if (b.isContactingFloor(SCENE_HEIGHT)) {
                 b.stopMotion();

@@ -4,56 +4,28 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class LevelMap {
-  String mySourceFilePath;
-  Block[][] myBlocks;
+  private String mySourceFilePath;
+  private Block[][] myBlocks;
+  private int initialMaxHealth;
+
+  // Defines the proportion of vertical screen space that the blocks take up
+  public final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
 
   /**
-   *
+   * Constructs
    * @param filepath name/path of .txt file containing level block layout as integers
    */
   public LevelMap(String filepath, double screenWidth, double screenHeight) {
     mySourceFilePath = filepath;
-    storeBlocksFromFile(filepath, screenWidth, screenHeight);
-  }
-
-  /**
-   * Converts a .txt file into Blocks based on the integer values in the file
-   * @param sourceFilePath filepath of .txt file containing number "picture" for block configuration
-   */
-  private void storeBlocksFromFile(String sourceFilePath,
-      double screenWidth, double screenHeight) {
-
-    // Proportion of total vertical screen space used by blocks
-    double verticalSpaceUsage = 0.75;
-    InputStream sourceInputStream = getInputStreamFromPath(sourceFilePath);
 
     // Creates 2D array template based on how many values are in the file
-    myBlocks = getBlockMapTemplate(sourceInputStream);
+    myBlocks = getBlockMapTemplate(filepath);
 
-    // If myBlocks is not the zero array
-    if (myBlocks.length != 0 && myBlocks[0].length != 0) {
-      double blockWidth = Util.divideSpaceByElement(screenWidth, myBlocks[0].length);
-      double blockHeight = Util.divideSpaceByElement(screenHeight*(verticalSpaceUsage), myBlocks.length);
+    // Store actual Blocks into the array based on source-file values
+    storeBlocksFromFile(filepath, screenWidth, screenHeight);
 
-      // Reset InputStream
-      sourceInputStream = getInputStreamFromPath(sourceFilePath);
-      Scanner scanner = new Scanner(sourceInputStream);
-      for (int row = 0; row < myBlocks.length; row++) {
-        for (int column = 0; column < myBlocks[0].length; column++) {
-          int healthValue = scanner.nextInt();
-          if (healthValue < 1) {
-            // If file integer is 0, create an off-screen "broken" block
-            myBlocks[row][column] = Block.createEmptyBlock(column*blockWidth,
-                row*blockHeight, blockWidth, blockHeight);
-          } else {
-            myBlocks[row][column] = new Block(column*blockWidth, row*blockHeight,
-                blockWidth, blockHeight, healthValue);
-          }
-        }
-      }
-      return;
-    }
-    System.out.println("Invalid file input.");
+    // Store the current max health value among all blocks
+    setInitialMaxHealth();
   }
 
   /**
@@ -63,7 +35,8 @@ public class LevelMap {
    * number of integers.
    * Adapted from Scanner code written by ChatGPT.
    */
-  private Block[][] getBlockMapTemplate(InputStream sourceInputStream) {
+  private Block[][] getBlockMapTemplate(String sourceFilePath) {
+    InputStream sourceInputStream = getInputStreamFromPath(sourceFilePath);
     Scanner fileScanner = new Scanner(sourceInputStream);
 
     // default to -1 since no line has been scanned yet
@@ -99,6 +72,34 @@ public class LevelMap {
   }
 
   /**
+   * Converts a .txt file into Blocks based on the integer values in the file
+   * @param sourceFilePath filepath of .txt file containing number "picture" for block configuration
+   */
+  private void storeBlocksFromFile(String sourceFilePath,
+      double screenWidth, double screenHeight) {
+
+    // If myBlocks is not the zero array
+    if (myBlocks.length != 0 && myBlocks[0].length != 0) {
+      double blockWidth = Util.divideSpaceByElement(screenWidth, myBlocks[0].length);
+      double blockHeight = Util.divideSpaceByElement(
+          screenHeight*(BLOCK_VERTICAL_SPACE_USAGE), myBlocks.length);
+
+      InputStream sourceInputStream = getInputStreamFromPath(sourceFilePath);
+      Scanner scanner = new Scanner(sourceInputStream);
+
+      for (int row = 0; row < myBlocks.length; row++) {
+        for (int column = 0; column < myBlocks[0].length; column++) {
+          int healthValue = scanner.nextInt();
+          myBlocks[row][column] = Block.createBlockFor2dArrayWithParameters(row, column,
+              blockWidth, blockHeight, healthValue);
+        }
+      }
+      return;
+    }
+    System.out.println("Invalid file input.");
+  }
+
+  /**
    * Returns new InputStream from String of source file path
    */
   private InputStream getInputStreamFromPath(String filepath) {
@@ -110,5 +111,33 @@ public class LevelMap {
    */
   public Block[][] getBlocks() {
     return myBlocks;
+  }
+
+  /**
+   * Stores the maximum health value among all blocks in myBlocks
+   */
+  private void setInitialMaxHealth() {
+    initialMaxHealth = 0;
+    for (Block[] row : myBlocks) {
+      for (Block block : row) {
+        if (block.getHealth() > initialMaxHealth) {
+          initialMaxHealth = block.getHealth();
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns the starting max health value among all blocks based on the source file map
+   */
+  public int getInitialMaxHealth() {
+    return initialMaxHealth;
+  }
+
+  /**
+   * Returns the filepath of the source file for this level block mapping
+   */
+  public String getSourceFilePath() {
+    return mySourceFilePath;
   }
 }

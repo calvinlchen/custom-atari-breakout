@@ -13,16 +13,34 @@ public class Block {
     myShape = new Rectangle(xPosition, yPosition, width, height);
     myShape.setFill(Color.DARKRED);
     myShape.setStroke(Color.BLACK);
-    myShape.setStrokeWidth(2);
+    myShape.setStrokeWidth(1);
 
     myHealth = healthCount;
   }
 
-  // Creates a block with 0 health and broken-block characteristics
-  public static Block createEmptyBlock(double xPosition, double yPosition, double width, double height) {
+  /**
+   * Creates a block with 0 health and broken-block characteristics
+   */
+  public static Block createEmptyBlock(double xPosition, double yPosition, double width,
+      double height) {
     Block block = new Block(xPosition, yPosition, width, height, 0);
     block.makeInvisible();
     return block;
+  }
+
+  /**
+   * Creates a block for the LevelMap array with the proper characteristics based on the provided
+   * health value (typically from the source file)
+   */
+  public static Block createBlockFor2dArrayWithParameters( int arrayMapRow, int arrayMapColumn,
+      double blockWidth, double blockHeight, int healthValue) {
+    if (healthValue < 1) {
+      // If file integer is 0, create an off-screen "broken" block
+      return Block.createEmptyBlock(arrayMapColumn*blockWidth,
+          arrayMapRow*blockHeight, blockWidth, blockHeight);
+    }
+    return new Block(arrayMapColumn*blockWidth, arrayMapRow*blockHeight,
+        blockWidth, blockHeight, healthValue);
   }
 
   /**

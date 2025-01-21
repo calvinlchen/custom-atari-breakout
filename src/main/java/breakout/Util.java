@@ -51,4 +51,18 @@ public class Util {
   public static Color hexToColor(String hexCode) {
     return Color.valueOf(hexCode);
   }
+
+  /**
+   * @return level name with level filename format (lvl_xx)
+   */
+  public static String getLevelFilename(int levelNumber) {
+    String filename = "lvl_";
+
+    // add 0 before level number if level number is single digits
+    if (levelNumber < 10) {
+      filename += "0";
+    }
+
+    return filename + levelNumber;
+  }
 }

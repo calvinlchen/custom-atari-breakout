@@ -28,8 +28,8 @@ public class Ball {
     start_x = getX();
     myView.setY((screenHeight / 9.0) * 7);
     start_y = getY();
-    // default to BALL_SPEED speed in both the x and y directions
-    myVelocity = new Point2D(BALL_SPEED, -BALL_SPEED);
+    // begin at initial position, zero velocity.
+    reset();
   }
 
   /**
@@ -170,11 +170,26 @@ public class Ball {
   }
 
   /**
-   * Reset ball to start position and default velocity.
+   * Reset ball to start position and zero velocity.
    */
   public void reset () {
     myView.setX(start_x);
     myView.setY(start_y);
+    myVelocity = new Point2D(0, 0);
+  }
+
+  /**
+   * Start moving the ball in the upward-right direction based on BALL_SPEED.
+   */
+  public void startMotion() {
+    myVelocity = new Point2D(BALL_SPEED, -BALL_SPEED);
+  }
+
+  /**
+   * Checks if ball is in motion based on myVelocity.
+   */
+  public boolean isMoving() {
+    return (myVelocity.getX() != 0 || myVelocity.getY() != 0);
   }
 
   /**

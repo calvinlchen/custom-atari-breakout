@@ -2,22 +2,18 @@ package breakout;
 
 import java.io.InputStream;
 import java.util.Scanner;
+import javafx.scene.paint.Color;
 
 public class LevelMap {
   private String mySourceFilePath;
   private Block[][] myBlocks;
-  private int initialMaxHealth;
+  private int myInitialMaxHealth;
 
   // The main block color; becomes darker/lighter when blocks have more/less health
-  private String myMainColor;
+  private Color myMainColor;
 
   // Defines the proportion of vertical screen space that the blocks take up
   public final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
-
-  // Block color brightness changes depending on block health. More health = darker, less health =
-  // brighter.
-  public static final double MIN_COLOR_BRIGHTNESS_FACTOR = 0.5; // when highest health value on map
-  public static final double MAX_COLOR_BRIGHTNESS_FACTOR = 1.5; // when at one/minimum health
 
   /**
    * Constructs
@@ -34,6 +30,28 @@ public class LevelMap {
 
     // Store the current max health value among all blocks
     setInitialMaxHealth();
+
+    if (myInitialMaxHealth > 0) {
+      // Store main color for level blocks
+      String colorFilename = "/colors/lvl_01_color.txt";
+      System.out.println(colorFilename);
+      myMainColor = getColorFromFile(colorFilename);
+
+      // Set block colors according to myMainColor and block health values
+      setAllBlockColors();
+    }
+  }
+
+  /**
+   * Sets the color of all blocks in the level according to myMainColor and the current block health
+   * and the initial maximum block health value
+   */
+  public void setAllBlockColors() {
+    for (Block[] row : myBlocks) {
+      for (Block block : row) {
+        block.updateColorForHealth();
+      }
+    }
   }
 
   /**
@@ -99,12 +117,24 @@ public class LevelMap {
         for (int column = 0; column < myBlocks[0].length; column++) {
           int healthValue = scanner.nextInt();
           myBlocks[row][column] = Block.createBlockFor2dArrayWithParameters(row, column,
-              blockWidth, blockHeight, healthValue);
+              blockWidth, blockHeight, healthValue, this);
         }
       }
       return;
     }
     System.out.println("Invalid file input.");
+  }
+
+  /**
+   * Retrieves main level color from color file; defaults to gray if no color file is found
+   */
+  private Color getColorFromFile(String filename) {
+    InputStream in = getInputStreamFromPath(filename);
+    Scanner s = new Scanner(in);
+    if (s.hasNext()) {
+      return Util.hexToColor(s.next());
+    }
+    return Color.GRAY;
   }
 
   /**
@@ -125,11 +155,11 @@ public class LevelMap {
    * Stores the maximum health value among all blocks in myBlocks
    */
   private void setInitialMaxHealth() {
-    initialMaxHealth = 0;
+    myInitialMaxHealth = 0;
     for (Block[] row : myBlocks) {
       for (Block block : row) {
-        if (block.getHealth() > initialMaxHealth) {
-          initialMaxHealth = block.getHealth();
+        if (block.getHealth() > myInitialMaxHealth) {
+          myInitialMaxHealth = block.getHealth();
         }
       }
     }
@@ -139,7 +169,14 @@ public class LevelMap {
    * Returns the starting max health value among all blocks based on the source file map
    */
   public int getInitialMaxHealth() {
-    return initialMaxHealth;
+    return myInitialMaxHealth;
+  }
+
+  /**
+   * Returns the main block color
+   */
+  public Color getMainColor() {
+    return myMainColor;
   }
 
   /**

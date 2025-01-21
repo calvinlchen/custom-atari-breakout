@@ -8,8 +8,15 @@ public class Block {
   private int myHealth;
 
   private final Rectangle myShape;
+  private final LevelMap myLevelMap;
 
-  public Block(double xPosition, double yPosition, double width, double height, int healthCount) {
+  // Block color brightness changes depending on block health. More health = darker, less health =
+  // brighter.
+  public static final double MIN_BLOCK_BRIGHTNESS_FACTOR = 0.5; // when highest health value on map
+  public static final double MAX_BLOCK_BRIGHTNESS_FACTOR = 1.5; // when at one/minimum health
+
+  public Block(double xPosition, double yPosition, double width, double height, int healthCount,
+      LevelMap levelMap) {
     // Create rectangle shape for block
     myShape = new Rectangle(xPosition, yPosition, width, height);
     myShape.setFill(Color.DARKRED);
@@ -17,14 +24,15 @@ public class Block {
     myShape.setStrokeWidth(1);
 
     myHealth = healthCount;
+    myLevelMap = levelMap;
   }
 
   /**
    * Creates a block with 0 health and broken-block characteristics
    */
   public static Block createEmptyBlock(double xPosition, double yPosition, double width,
-      double height) {
-    Block block = new Block(xPosition, yPosition, width, height, 0);
+      double height, LevelMap levelMap) {
+    Block block = new Block(xPosition, yPosition, width, height, 0, levelMap);
     block.makeInvisible();
     return block;
   }
@@ -34,14 +42,14 @@ public class Block {
    * health value (typically from the source file)
    */
   public static Block createBlockFor2dArrayWithParameters( int arrayMapRow, int arrayMapColumn,
-      double blockWidth, double blockHeight, int healthValue) {
+      double blockWidth, double blockHeight, int healthValue, LevelMap levelMap) {
     if (healthValue < 1) {
       // If file integer is 0, create an off-screen "broken" block
       return Block.createEmptyBlock(arrayMapColumn*blockWidth,
-          arrayMapRow*blockHeight, blockWidth, blockHeight);
+          arrayMapRow*blockHeight, blockWidth, blockHeight, levelMap);
     }
     return new Block(arrayMapColumn*blockWidth, arrayMapRow*blockHeight,
-        blockWidth, blockHeight, healthValue);
+        blockWidth, blockHeight, healthValue, levelMap);
   }
 
   /**
@@ -175,6 +183,35 @@ public class Block {
     if (isBroken()) {
       makeInvisible();
     }
+    updateColorForHealth();
+  }
+
+  /**
+   * Updates a block's color to the correct gradient of the main color based on its health.
+   * Adapted from code authored by ChatGPT.
+   */
+  public void updateColorForHealth() {
+    int currentHealth = getHealth();
+    if (currentHealth <= 0) {
+      return;
+    }
+
+    Color mainColor = myLevelMap.getMainColor();
+    int levelMaxBlockHealth = myLevelMap.getInitialMaxHealth();
+
+    double fraction =
+        (double)(levelMaxBlockHealth - currentHealth) / (levelMaxBlockHealth - 1);
+
+    double brightnessRange = MAX_BLOCK_BRIGHTNESS_FACTOR - MIN_BLOCK_BRIGHTNESS_FACTOR;
+    double brightnessFactor = MIN_BLOCK_BRIGHTNESS_FACTOR + fraction * brightnessRange;
+    double saturationFactor = MAX_BLOCK_BRIGHTNESS_FACTOR - fraction * brightnessRange;
+
+    // Suppose the "base" color is your mainColor, e.g., Color.DARKRED
+    // We do not shift hue (0), we do not change saturation (1.0),
+    // we scale brightness by brightnessFactor, keep opacity the same (1.0).
+    Color newColor = mainColor.deriveColor(0, saturationFactor, brightnessFactor, 1.0);
+    setColor(newColor);
+
   }
 
   /**

@@ -70,32 +70,32 @@ public class Block {
 
   /**
    * Returns whether a ball is intersecting this block.
-   * Code authored by ChatGPT.
+   * Adapted from code authored by ChatGPT.
    */
   public boolean intersects(Ball ball) {
-    return (ball.getX() + ball.getWidth() >= getX())    // ball's right edge >= block's left
-        && (ball.getX() <= getX() + getWidth())         // ball's left edge  <= block's right
-        && (ball.getY() + ball.getHeight() >= getY())   // ball's bottom    >= block's top
-        && (ball.getY() <= getY() + getHeight());       // ball's top       <= block's bottom
+    return (ball.getRightEdgeX() >= getX())         // ball's right edge >= block's left
+        && (ball.getX() <= getRightEdgeX())         // ball's left edge  <= block's right
+        && (ball.getBottomEdgeY() >= getY())        // ball's bottom    >= block's top
+        && (ball.getY() <= getBottomEdgeY());       // ball's top       <= block's bottom
   }
 
   /**
    * Returns the amount of x-axis overlap between this block and the given ball.
-   * Code authored by ChatGPT.
+   * Adapted from code authored by ChatGPT.
    */
   private double calculateXOverlap(Ball ball) {
-    double ballRight = ball.getX() + ball.getWidth();
-    double blockRight = getX() + getWidth();
+    double ballRight = ball.getRightEdgeX();
+    double blockRight = getRightEdgeX();
     return Math.min(ballRight, blockRight) - Math.max(ball.getX(), getX());
   }
 
   /**
    * Returns the amount of y-axis overlap between this block and the given ball.
-   * Code authored by ChatGPT.
+   * Adapted from code authored by ChatGPT.
    */
   private double calculateYOverlap(Ball ball) {
-    double ballBottom = ball.getY() + ball.getHeight();
-    double blockBottom = getY() + getHeight();
+    double ballBottom = ball.getBottomEdgeY();
+    double blockBottom = getBottomEdgeY();
     return Math.min(ballBottom, blockBottom) - Math.max(ball.getY(), getY());
   }
 
@@ -109,7 +109,7 @@ public class Block {
 
   /**
    * Calculate overlap between block and ball, and "bounce" ball velocity accordingly.
-   * Code authored by ChatGPT.
+   * Adapted from code authored by ChatGPT.
    */
   public void bounceBall(Ball ball) {
     double overlapX = calculateXOverlap(ball);
@@ -122,10 +122,10 @@ public class Block {
       // Move ball outside the block
       if (ball.getX() < getX()) {
         // when ball is to the left of block
-        ball.setX(getX() - ball.getWidth());
+        ball.setX(getX() - ball.getWidth());  // place ball directly to the left of the block
       } else {
         // when ball is to the right of block
-        ball.setX(getX() + getWidth());
+        ball.setX(getRightEdgeX());
       }
 
     } else if (overlapY < overlapX) {   // Ball hit from top or bottom
@@ -138,7 +138,7 @@ public class Block {
         ball.setY(getY() - ball.getHeight());
       } else {
         // when ball is below block
-        ball.setY(getY() + getHeight());
+        ball.setY(getBottomEdgeY());
       }
 
     } else {
@@ -170,6 +170,20 @@ public class Block {
    */
   public double getY() {
     return myShape.getY();
+  }
+
+  /**
+   * @return the x-position value of the right-hand side of the shape.
+   */
+  private double getRightEdgeX() {
+    return getX() + getWidth();
+  }
+
+  /**
+   * @return the y-position value of the bottom edge of the shape.
+   */
+  private double getBottomEdgeY() {
+    return getY() + getHeight();
   }
 
   /**

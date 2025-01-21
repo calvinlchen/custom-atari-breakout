@@ -156,6 +156,20 @@ public class Ball {
   }
 
   /**
+   * @return the x-position value of the right-hand side of the ImageView.
+   */
+  public double getRightEdgeX() {
+    return getX() + getWidth();
+  }
+
+  /**
+   * @return the y-position value of the bottom edge of the ImageView.
+   */
+  public double getBottomEdgeY() {
+    return getY() + getHeight();
+  }
+
+  /**
    * Reset ball to start position and default velocity.
    */
   public void reset () {

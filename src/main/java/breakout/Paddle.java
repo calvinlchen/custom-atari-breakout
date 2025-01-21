@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Paddle {
@@ -22,6 +23,7 @@ public class Paddle {
     start_x = scene_width/2 - PADDLE_WIDTH/2;
     start_y = (scene_height/15)*14 - PADDLE_HEIGHT/2;
     myShape = new Rectangle(start_x, start_y, PADDLE_WIDTH, PADDLE_HEIGHT);
+    myShape.setFill(Color.WHITE);
   }
 
   /**

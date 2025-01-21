@@ -24,8 +24,8 @@ public class Main extends Application {
     // useful names for constant values used
     public static final String TITLE = "Basketball Bouncer";
     public static final Color DUKE_BLUE = new Color(0, 0.325, 0.608, 1);
-    public static final int SCENE_WIDTH = 1100;
-    public static final int SCENE_HEIGHT = 850;
+    public static final int SCENE_WIDTH = 1000;
+    public static final int SCENE_HEIGHT = 750;
 //    public static final int BLOCK_WIDTH = 50;
 //    public static final int BLOCK_HEIGHT = 20;
     public static final int FRAMES_PER_SECOND = 60;

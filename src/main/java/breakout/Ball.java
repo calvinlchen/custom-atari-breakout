@@ -48,25 +48,12 @@ public class Ball {
    *
    * @author Robert C. Duvall
    */
-  public void bounceOffEdge(double screenWidth) {
+  public void checkAndBounceEdge(double screenWidth) {
     if (getX() < 0 || getX() > screenWidth - getWidth()) {
       reverseXSpeed();
     }
     // simulate bounce off the ceiling wall by simply reversing Y speed
     if (getY() <= 0) {
-      reverseYSpeed();
-    }
-  }
-
-  /**
-   * Bounce off the paddle if contacting the paddle from above or below
-   */
-  public void bounceOffPaddle(Paddle paddle) {
-    // paddle is treated as a line with 0 thickness
-    if (paddle.getX() <= getCenterX()
-        && paddle.getX() + paddle.getWidth() >= getCenterX()
-        && getY() <= paddle.getY()
-        && getY() + getHeight() >= paddle.getY()) {
       reverseYSpeed();
     }
   }

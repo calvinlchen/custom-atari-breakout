@@ -1,5 +1,6 @@
 package breakout;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import javafx.application.Application;
@@ -32,6 +33,7 @@ public class Main extends Application {
 
     // public static final String RESOURCE_PATH = "/resources/";
     public static final String BALL_IMAGE = "/ball/basketball.png";
+    public static final String LEVEL_MAP_01 = "/maps/lvl_01.txt";
 
     private List<Ball> myBalls;
     private List<Block> myBlocks;
@@ -41,6 +43,8 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage stage) {
+        LevelMap level01 = new LevelMap(LEVEL_MAP_01, SCENE_WIDTH, SCENE_HEIGHT);
+
         Paddle paddle = new Paddle(SCENE_WIDTH, SCENE_HEIGHT);
 
         Ball ball = new Ball(new Image(getClass().getResourceAsStream(BALL_IMAGE)), SCENE_WIDTH, SCENE_HEIGHT);
@@ -48,10 +52,10 @@ public class Main extends Application {
         myBalls.add(ball);
 
         myBlocks = new ArrayList<>();
-        Block block = new Block(400, 400, 300, 80, 1);
-        myBlocks.add(block);
-        block = new Block(800, 200, 400, 60, 1);
-        myBlocks.add(block);
+
+        for (Block[] blockRow : level01.getBlocks()) {
+          myBlocks.addAll(Arrays.asList(blockRow));
+        }
 
         Group root = new Group();
         root.getChildren().add(paddle.getShape());
@@ -81,17 +85,23 @@ public class Main extends Application {
     }
 
     private void step (Paddle p, double elapsedTime) {
-        for (Ball b : myBalls) {
-            b.bounceOffEdge(SCENE_WIDTH, SCENE_HEIGHT);
-            b.bounceOffPaddle(p);
+        for (Ball ball : myBalls) {
+            ball.bounceOffEdge(SCENE_WIDTH);
+            ball.bounceOffPaddle(p);
 
             for (Block block : myBlocks) {
-                b.bounceOffBlock(block);
+                if (block.checkIfShouldBounce(ball)) {
+                    block.bounceBall(ball);
+                    block.hitBlockActions();
+                    // stops the entire loop after the first bounce
+                    break;
+                }
             }
 
-            b.move(elapsedTime);
-            if (b.isContactingFloor(SCENE_HEIGHT)) {
-                b.stopMotion();
+            ball.move(elapsedTime);
+
+            if (ball.isContactingFloor(SCENE_HEIGHT)) {
+                ball.stopMotion();
             }
         }
     }

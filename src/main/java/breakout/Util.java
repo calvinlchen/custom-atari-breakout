@@ -1,6 +1,7 @@
 package breakout;
 
 import java.util.Scanner;
+import javafx.scene.paint.Color;
 
 /**
  * This class contains static helper methods used in other classes.
@@ -41,5 +42,13 @@ public class Util {
    */
   public static double divideSpaceByElement(double spaceSize, int numElements) {
     return spaceSize / numElements;
+  }
+
+  /**
+   * Converts a given hex code String to a Color object.
+   * @param hexCode String in hex code format, such as "#FFFFFF", or "#00539b" (without quotes)
+   */
+  public static Color hexToColor(String hexCode) {
+    return Color.valueOf(hexCode);
   }
 }

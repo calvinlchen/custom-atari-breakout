@@ -8,8 +8,16 @@ public class LevelMap {
   private Block[][] myBlocks;
   private int initialMaxHealth;
 
+  // The main block color; becomes darker/lighter when blocks have more/less health
+  private String myMainColor;
+
   // Defines the proportion of vertical screen space that the blocks take up
   public final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
+
+  // Block color brightness changes depending on block health. More health = darker, less health =
+  // brighter.
+  public static final double MIN_COLOR_BRIGHTNESS_FACTOR = 0.5; // when highest health value on map
+  public static final double MAX_COLOR_BRIGHTNESS_FACTOR = 1.5; // when at one/minimum health
 
   /**
    * Constructs

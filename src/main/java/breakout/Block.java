@@ -1,6 +1,7 @@
 package breakout;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Block {
@@ -174,6 +175,21 @@ public class Block {
     if (isBroken()) {
       makeInvisible();
     }
+  }
+
+  /**
+   * @return fill color of the block as Paint object
+   */
+  public Paint getColor() {
+    return getShape().getFill();
+  }
+
+  /**
+   * Sets the fill color of the block
+   * @param color Paint object representing color
+   */
+  public void setColor(Paint color) {
+    getShape().setFill(color);
   }
 
   /**

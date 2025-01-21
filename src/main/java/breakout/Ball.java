@@ -6,11 +6,10 @@ import javafx.scene.image.ImageView;
 
 /**
  * ADAPTED FROM: Robert C. Duvall's "Bouncer" class (<a href="https://coursework.cs.duke.edu/compsci308_2025spring/lab_bounce/-/blob/95c5d61cca4390e96f0a944670bf5a01094ed2f1/src/main/java/bounce/Bouncer.java">...</a>)
- *
- * Defines the ball which bounces off the paddle and is used to break game blocks
+ * Defines the ball which bounces off the paddle and is used to break game blocks.
  */
 public class Ball {
-  public static final int BALL_SPEED = 175;
+  public static final int BALL_SPEED = 150;
   public static final int BALL_SIZE = 20;
 
   // JFX representation on the screen
@@ -45,11 +44,11 @@ public class Ball {
   }
 
   /**
-   * Bounce off the walls represented by the edges of the screen.
+   * Bounce off the left, right, and top edges of the screen when ball position indicates it.
    *
    * @author Robert C. Duvall
    */
-  public void bounceOffEdge(double screenWidth, double screenHeight) {
+  public void bounceOffEdge(double screenWidth) {
     if (getX() < 0 || getX() > screenWidth - getWidth()) {
       reverseXSpeed();
     }
@@ -73,17 +72,6 @@ public class Ball {
   }
 
   /**
-   * Bounce off a block if contacting any edge of the block
-   */
-  public void bounceOffBlock(Block block) {
-    if (block.shouldBounceTopEdge(this) || block.shouldBounceBottomEdge(this)) {
-      reverseYSpeed();
-    } else if (block.shouldBounceRightEdge(this) || block.shouldBounceLeftEdge(this)) {
-      reverseXSpeed();
-    }
-  }
-
-  /**
    * Returns true when ball is at or below the floor (bottom edge) of screen
    */
   public boolean isContactingFloor (double screenHeight) {
@@ -100,14 +88,14 @@ public class Ball {
   /**
    * Reverse the x-axis (horizontal) speed of the ball
    */
-  private void reverseXSpeed() {
+  public void reverseXSpeed() {
     myVelocity = new Point2D(-myVelocity.getX(), myVelocity.getY());
   }
 
   /**
    * Reverse the y-axis (vertical) speed of the ball
    */
-  private void reverseYSpeed() {
+  public void reverseYSpeed() {
     myVelocity = new Point2D(myVelocity.getX(), -myVelocity.getY());
   }
 
@@ -115,14 +103,14 @@ public class Ball {
    * Get the width of the ImageView representing the ball
    */
   public double getWidth() {
-    return myView.getBoundsInLocal().getWidth();
+    return myView.getFitWidth();
   }
 
   /**
    * Get the width of the ImageView representing the ball
    */
   public double getHeight() {
-    return myView.getBoundsInLocal().getHeight();
+    return myView.getFitHeight();
   }
 
   /**
@@ -140,17 +128,31 @@ public class Ball {
   }
 
   /**
+   * Set the x-position of the top-left corner of the ImageView representing the ball
+   */
+  public void setX(double xPos) {
+    myView.setX(xPos);
+  }
+
+  /**
+   * Set the y-position of the top-left corner of the ImageView representing the ball
+   */
+  public void setY(double yPos) {
+    myView.setY(yPos);
+  }
+
+  /**
    * Get the x-coordinate of the center of the ball
    */
   public double getCenterX() {
-    return getX() + (myView.getFitWidth() / 2);
+    return getX() + (getWidth() / 2);
   }
 
   /**
    * Get the y-coordinate of the center of the ball
    */
   public double getCenterY() {
-    return myView.getY() + (myView.getFitHeight() / 2);
+    return myView.getY() + (getHeight() / 2);
   }
 
   /**

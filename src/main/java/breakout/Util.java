@@ -34,4 +34,12 @@ public class Util {
     }
     return count;
   }
+
+  /**
+   * Given a certain number of elements that must be equally sized, return the proper size of each
+   * element to fit within a given space.
+   */
+  public static double divideSpaceByElement(double spaceSize, int numElements) {
+    return spaceSize / numElements;
+  }
 }

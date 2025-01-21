@@ -8,11 +8,6 @@ public class Block {
 
   private final Rectangle myShape;
 
-  // Defines the margin of a block that is used to determine if a ball has collided.
-  // For instance, a value of 0.2 means that a ball approaching from above will bounce if its bottom
-  // edge intersects the top 20% of the block.
-  public static final double COLLISION_MARGIN = 0.20;
-
   public Block(double xPosition, double yPosition, double width, double height, int healthCount) {
     // Create rectangle shape for block
     myShape = new Rectangle(xPosition, yPosition, width, height);
@@ -21,6 +16,13 @@ public class Block {
     myShape.setStrokeWidth(2);
 
     myHealth = healthCount;
+  }
+
+  // Creates a block with 0 health and broken-block characteristics
+  public static Block createEmptyBlock(double xPosition, double yPosition, double width, double height) {
+    Block block = new Block(xPosition, yPosition, width, height, 0);
+    block.makeInvisible();
+    return block;
   }
 
   /**
@@ -67,57 +69,93 @@ public class Block {
   }
 
   /**
-   * Returns whether a ball should "bounce" off the TOP of this block based on current positions
+   * Returns whether a ball is intersecting this block.
+   * Code authored by ChatGPT.
    */
-  public boolean shouldBounceTopEdge(Ball ball) {
-    return ball.getY() + ball.getHeight() >= getY()
-        && ball.getY() + ball.getHeight() <= getY() + getHeight()*COLLISION_MARGIN
-        && ballIsWithinHorizontalBounds(ball)
-        && getHealth() > 0;
+  public boolean intersects(Ball ball) {
+    return (ball.getX() + ball.getWidth() >= getX())    // ball's right edge >= block's left
+        && (ball.getX() <= getX() + getWidth())         // ball's left edge  <= block's right
+        && (ball.getY() + ball.getHeight() >= getY())   // ball's bottom    >= block's top
+        && (ball.getY() <= getY() + getHeight());       // ball's top       <= block's bottom
   }
 
   /**
-   * Returns whether a ball should "bounce" off the BOTTOM of this block based on current positions
+   * Returns the amount of x-axis overlap between this block and the given ball.
+   * Code authored by ChatGPT.
    */
-  public boolean shouldBounceBottomEdge(Ball ball) {
-    return ball.getY() <= getY() + getHeight()
-        && ball.getY() >= getY() + getHeight()*(1-COLLISION_MARGIN)
-        && ballIsWithinHorizontalBounds(ball)
-        && getHealth() > 0;
+  private double calculateXOverlap(Ball ball) {
+    double ballRight = ball.getX() + ball.getWidth();
+    double blockRight = getX() + getWidth();
+    return Math.min(ballRight, blockRight) - Math.max(ball.getX(), getX());
   }
 
   /**
-   * Returns whether a ball should "bounce" off the LEFT edge of this block based on current positions
+   * Returns the amount of y-axis overlap between this block and the given ball.
+   * Code authored by ChatGPT.
    */
-  public boolean shouldBounceLeftEdge(Ball ball) {
-    return ball.getX() + ball.getWidth() >= getX()
-        && ball.getX() + ball.getWidth() <= getX() + getWidth()*COLLISION_MARGIN
-        && ballIsWithinVerticalBounds(ball)
-        && getHealth() > 0;
+  private double calculateYOverlap(Ball ball) {
+    double ballBottom = ball.getY() + ball.getHeight();
+    double blockBottom = getY() + getHeight();
+    return Math.min(ballBottom, blockBottom) - Math.max(ball.getY(), getY());
   }
 
   /**
-   * Returns whether a ball should "bounce" off the RIGHT edge of this block based on current positions
+   * @param ball ball which is being compared to this block
+   * @return True if ball should bounce off Block object, False if not
    */
-  public boolean shouldBounceRightEdge(Ball ball) {
-    return ball.getX() <= getX()
-        && ball.getX() >= getX() + getWidth()*(1-COLLISION_MARGIN)
-        && ballIsWithinVerticalBounds(ball)
-        && getHealth() > 0;
+  public boolean checkIfShouldBounce(Ball ball) {
+    return (getHealth() > 0 && intersects(ball));
   }
 
   /**
-   * Returns whether a ball is positioned within the horizontal range of the block's coordinates.
+   * Calculate overlap between block and ball, and "bounce" ball velocity accordingly.
+   * Code authored by ChatGPT.
    */
-  private boolean ballIsWithinHorizontalBounds(Ball ball) {
-    return ball.getCenterX() >= getX() && ball.getCenterX() <= getX() + getWidth();
+  public void bounceBall(Ball ball) {
+    double overlapX = calculateXOverlap(ball);
+    double overlapY = calculateYOverlap(ball);
+
+    if (overlapX < overlapY) {    // Ball hit from left or right side
+
+      ball.reverseXSpeed();
+
+      // Move ball outside the block
+      if (ball.getX() < getX()) {
+        // when ball is to the left of block
+        ball.setX(getX() - ball.getWidth());
+      } else {
+        // when ball is to the right of block
+        ball.setX(getX() + getWidth());
+      }
+
+    } else if (overlapY < overlapX) {   // Ball hit from top or bottom
+
+      ball.reverseYSpeed();
+
+      // Move ball outside the block
+      if (ball.getY() < getY()) {
+        // when ball is above block
+        ball.setY(getY() - ball.getHeight());
+      } else {
+        // when ball is below block
+        ball.setY(getY() + getHeight());
+      }
+
+    } else {
+      // Perfect corner case -> reverse both x and y velocities
+      ball.reverseXSpeed();
+      ball.reverseYSpeed();
+    }
   }
 
   /**
-   * Returns whether a ball is positioned within the vertical range of a block's coordinates.
+   * Completes actions that occur on a block when it is hit by a ball.
    */
-  private boolean ballIsWithinVerticalBounds(Ball ball) {
-    return ball.getCenterY() >= getY() && ball.getCenterY() <= getY() + getHeight();
+  public void hitBlockActions() {
+    decreaseHealth();
+    if (isBroken()) {
+      makeInvisible();
+    }
   }
 
   /**

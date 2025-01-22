@@ -49,6 +49,10 @@ public class GameManager {
     myStage = stage;
   }
 
+  /**
+   * Initial state of game; starting splash screen with reset lives and score.
+   * Adapted from code authored by ChatGPT for displaying text.
+   */
   public void startScreen() {
     // Sets number of lives, current score, etc. to initial state
     setVariablesToInitialState();
@@ -75,9 +79,9 @@ public class GameManager {
     Text titleText = new Text(startInstructions);
 
     titleText.setFill(Color.WHITE);
-    titleText.setX(50);  // adjust for positioning
+    titleText.setX(50);
     titleText.setY(100);
-    titleText.setFont(Font.font(24)); // choose a bigger font if you like
+    titleText.setFont(Font.font(24));
 
     mySceneRoot.getChildren().add(titleText);
 
@@ -164,21 +168,7 @@ public class GameManager {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
-        // Text for game instructions
-        String continueInstructions = """
-        Level %d complete!
-        
-        Press SPACE to continue
-        """.formatted(myCurrentLevelNumber);
-
-        Text text = new Text(continueInstructions);
-
-        text.setFill(Color.WHITE);
-        text.setX(50);  // adjust for positioning
-        text.setY(100);
-        text.setFont(Font.font(24)); // choose a bigger font if you like
-
-        mySceneRoot.getChildren().add(text);
+        displayLevelCompleteText();
         myAnimation.stop();
       }
 
@@ -199,6 +189,24 @@ public class GameManager {
         }
       }
     }
+  }
+
+  private void displayLevelCompleteText() {
+    // Text for game instructions
+    String continueInstructions = """
+    Level %d complete!
+    
+    Press SPACE to continue
+    """.formatted(myCurrentLevelNumber);
+
+    Text text = new Text(continueInstructions);
+
+    text.setFill(Color.WHITE);
+    text.setX(50);
+    text.setY(100);
+    text.setFont(Font.font(32));
+
+    mySceneRoot.getChildren().add(text);
   }
 
   /**

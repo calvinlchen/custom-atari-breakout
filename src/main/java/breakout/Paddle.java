@@ -88,11 +88,12 @@ public class Paddle {
    * Bounce off the paddle if contacting the paddle from above or below
    */
   public void checkAndBounceBall(Ball ball) {
-    // paddle is treated as a line with 0 thickness
+    // ball must be travelling downwards to be bounced.
     if (getX() <= ball.getCenterX()
         && getX() + getWidth() >= ball.getCenterX()
         && ball.getY() <= getY()
-        && ball.getY() + ball.getHeight() >= getY()) {
+        && ball.getY() + ball.getHeight() >= getY()
+        && ball.getMyVelocity().getY() > 0) {
       ball.reverseYSpeed();
     }
   }

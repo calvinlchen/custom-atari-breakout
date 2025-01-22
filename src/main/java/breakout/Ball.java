@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
  * Defines the ball which bounces off the paddle and is used to break game blocks.
  */
 public class Ball {
-  public static final int BALL_SPEED = 240;
+  public static final int BALL_SPEED = 230;
   public static final int BALL_SIZE = 30;
 
   // JFX representation on the screen
@@ -154,6 +154,13 @@ public class Ball {
    */
   public double getBottomEdgeY() {
     return getY() + getHeight();
+  }
+
+  /**
+   * @return the Point2D object containing velocity info
+   */
+  public Point2D getMyVelocity() {
+    return myVelocity;
   }
 
   /**

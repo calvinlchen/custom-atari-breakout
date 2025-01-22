@@ -267,9 +267,19 @@ public class GameManager {
     } else if (code == KeyCode.LEFT) {
       myPaddle.moveLeft();
     }
+    // Cheat key Q: return to start screen. Updates high score, resets score and lives.
+    if (code == KeyCode.Q) {
+      setHighScoreResetGame();
+    }
     if (code == KeyCode.SPACE) {
       handleSpaceBar();
     }
+  }
+
+  private void setHighScoreResetGame() {
+    checkAndUpdateHighScore(myScore);
+    myAnimation.stop();
+    startScreen();
   }
 
   private void handleSpaceBar() {

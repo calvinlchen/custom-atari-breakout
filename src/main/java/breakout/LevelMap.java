@@ -13,7 +13,8 @@ public class LevelMap {
   private Color myMainColor;
 
   // Defines the proportion of vertical screen space that the blocks take up
-  public final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
+  public static final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
+  public static final int MAX_BLOCKS_PER_ROW_AND_COLUMN = 50;
 
   /**
    * @param levelNumber number of level, for filename. For example, value of 1 will use file lvl_01.txt
@@ -89,9 +90,10 @@ public class LevelMap {
     }
 
     // If the file contains no lines, or if either dimension (rows/columns) exceeds size 50
-    if (lineCount <= 0 || initialColumnCount > 50 || lineCount > 50) {
+    if (lineCount <= 0 || initialColumnCount > MAX_BLOCKS_PER_ROW_AND_COLUMN
+        || lineCount > MAX_BLOCKS_PER_ROW_AND_COLUMN) {
       System.out.println("Error: Accepted dimensions exceeded. (Must have at least 1 row, and "
-          + "cannot exceed 50 rows or columns of blocks.)");
+          + "cannot exceed MAX_BLOCKS_PER_ROW_AND_COLUMN rows or columns of blocks.)");
       return new Block[0][0];
     }
     return new Block[lineCount][initialColumnCount];

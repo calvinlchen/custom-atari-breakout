@@ -253,8 +253,7 @@ public class GameManager {
    */
   private void whenGameEnd(boolean playerWon) {
     boolean newHighScore = checkAndUpdateHighScore(myScore);
-    mySceneRoot.getChildren().add(GameText.getEndingText(
-        playerWon, newHighScore, myHighScore, myScore));
+    addTextToRoot(GameText.getEndingText(playerWon, newHighScore, myHighScore, myScore));
     myAnimation.stop();
   }
 

@@ -262,18 +262,20 @@ public class GameManager {
    * Adapted from code authored by Robert C. Duvall
    */
   private void handleKeyInput(KeyCode code) {
-    if (code == KeyCode.RIGHT) {
-      myPaddle.moveRight(mySceneWidth);
-    } else if (code == KeyCode.LEFT) {
-      myPaddle.moveLeft();
-    }
-    // Cheat key Q: return to start screen. Updates high score, resets score and lives.
-    if (code == KeyCode.Q) {
-      setHighScoreResetGame();
-    }
-    // Cheat key R: reset paddle and ball to starting positions.
-    if (code == KeyCode.R) {
-      resetPaddleAndBalls();
+    if (myCurrentLevelNumber > 0) {
+      if (code == KeyCode.RIGHT) {
+        myPaddle.moveRight(mySceneWidth);
+      } else if (code == KeyCode.LEFT) {
+        myPaddle.moveLeft();
+      }
+      // Cheat key Q: return to start screen. Updates high score, resets score and lives.
+      if (code == KeyCode.Q) {
+        setHighScoreResetGame();
+      }
+      // Cheat key R: reset paddle and ball to starting positions.
+      if (code == KeyCode.R) {
+        resetPaddleAndBalls();
+      }
     }
     if (code == KeyCode.SPACE) {
       handleSpaceBar();

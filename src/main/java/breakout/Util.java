@@ -46,6 +46,7 @@ public class Util {
 
   /**
    * Converts a given hex code String to a Color object.
+   *
    * @param hexCode String in hex code format, such as "#FFFFFF", or "#00539b" (without quotes)
    */
   public static Color hexToColor(String hexCode) {

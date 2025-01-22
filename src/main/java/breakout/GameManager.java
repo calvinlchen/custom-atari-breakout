@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GameManager {
+
   private int myLivesRemaining;
   private int myCurrentLevelNumber;
   private int myScore;
@@ -49,8 +50,8 @@ public class GameManager {
   }
 
   /**
-   * Initial state of game; starting splash screen with reset lives and score.
-   * Adapted from code authored by ChatGPT for displaying text.
+   * Initial state of game; starting splash screen with reset lives and score. Adapted from code
+   * authored by ChatGPT for displaying text.
    */
   public void startScreen() {
     // Sets number of lives, current score, etc. to initial state
@@ -84,6 +85,7 @@ public class GameManager {
 
   /**
    * Add all necessary objects to a new root
+   *
    * @param levelName level number in "lvl_xx" format (i.e. lvl_01)
    * @return root of all scene objects
    */
@@ -118,8 +120,7 @@ public class GameManager {
   }
 
   /**
-   * Initialize what will be displayed.
-   * Adapted from code by Robert C. Duvall.
+   * Initialize what will be displayed. Adapted from code by Robert C. Duvall.
    */
   private void initializeScene() {
     Scene scene = new Scene(mySceneRoot, mySceneWidth, mySceneHeight, Color.BLACK);
@@ -141,7 +142,7 @@ public class GameManager {
   /**
    * Actions taken per step
    */
-  private void step (double elapsedTime) {
+  private void step(double elapsedTime) {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
@@ -181,6 +182,7 @@ public class GameManager {
 
   /**
    * Check all blocks and bounce the ball if it is contacting a block.
+   *
    * @param ball Ball object to bounce if contacting a block
    */
   private void checkBlocksAndBounceBall(Ball ball) {
@@ -202,11 +204,10 @@ public class GameManager {
    */
   private void whenBallHitsFloor(Ball ball) {
     myLivesRemaining--;
-    if (! checkPlayerLost()) {
+    if (!checkPlayerLost()) {
       myLivesText.setText(GameText.livesToString(myLivesRemaining));
       ball.reset();
-    }
-    else {
+    } else {
       ball.stopMotion();
       whenPlayerLoses();
     }
@@ -258,8 +259,7 @@ public class GameManager {
   }
 
   /**
-   * Handle user keyboard input.
-   * Adapted from code authored by Robert C. Duvall
+   * Handle user keyboard input. Adapted from code authored by Robert C. Duvall
    */
   private void handleKeyInput(KeyCode code) {
     if (myCurrentLevelNumber > 0) {
@@ -306,8 +306,7 @@ public class GameManager {
       // Unless there are no more levels, then it redirects to start screen to restart game
       if (nextLevelNumber < 0) {
         startScreen();
-      }
-      else {
+      } else {
         startLevel(nextLevelNumber);
       }
     }
@@ -334,7 +333,7 @@ public class GameManager {
   }
 
   private void setStillBallsInMotion() {
-    for(Ball ball : myBalls) {
+    for (Ball ball : myBalls) {
       if (!ball.isMoving()) {
         ball.startMotion();
       }
@@ -343,14 +342,17 @@ public class GameManager {
 
   /**
    * Creates a ball based on the provided image and scene dimensions.
+   *
    * @return new Ball object
    */
   private Ball createBall() {
-    return new Ball(new Image(getClass().getResourceAsStream(Main.BALL_IMAGE)), mySceneWidth, mySceneHeight);
+    return new Ball(new Image(getClass().getResourceAsStream(Main.BALL_IMAGE)), mySceneWidth,
+        mySceneHeight);
   }
 
   /**
    * Creates a paddle based on the provided scene dimensions.
+   *
    * @return new Paddle object
    */
   private Paddle createPaddle() {
@@ -375,13 +377,14 @@ public class GameManager {
 
   /**
    * replaces existing myBlocks with new list of blocks based on a LevelMap
+   *
    * @param levelMap LevelMap object containing the layout of blocks for a scene
    */
   private void resetBlocksToLevelMap(LevelMap levelMap) {
     myBlocks = new ArrayList<>();
     for (Block[] blockRow : levelMap.getBlocks()) {
       for (Block block : blockRow) {
-        if (! block.isBroken()) {
+        if (!block.isBroken()) {
           myBlocks.add(block);
         }
       }

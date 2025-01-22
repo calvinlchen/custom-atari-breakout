@@ -13,16 +13,16 @@ public class GameText {
     // Text for game instructions
     String startInstructions = """
         Welcome to Basketball Bouncer!
-
+        
         Break as many blocks with the ball as you can to score points.
         If the ball hits the bottom edge, you lose a life!
         (You start with %d lives.)
-
+        
         Move the paddle with your left and right arrow keys
         so that the ball doesn't hit the floor.
-
+        
         High score: %d
-
+        
         Press SPACE to start!
         """.formatted(numLives, highScore);
 
@@ -39,10 +39,10 @@ public class GameText {
   public static Text getLevelCompleteText(int levelNumber) {
     // Text for game instructions
     String continueGame = """
-    Level %d complete!
-    
-    Press SPACE to continue
-    """.formatted(levelNumber);
+        Level %d complete!
+        
+        Press SPACE to continue
+        """.formatted(levelNumber);
 
     Text text = new Text(continueGame);
 
@@ -61,36 +61,35 @@ public class GameText {
 
     if (playerWon) {
       continueGame = """
-      Congratulations, you won!!
-      
-      """;
-    }
-    else {
+          Congratulations, you won!!
+          
+          """;
+    } else {
       continueGame = """
-      Game Over
-      
-      """;
+          Game Over
+          
+          """;
     }
 
     continueGame += """
-    
-    Your score: %d
-    High score: %d
-    """.formatted(score, highScore);
+        
+        Your score: %d
+        High score: %d
+        """.formatted(score, highScore);
 
-    if(newHighScore) {
+    if (newHighScore) {
       continueGame += """
-      
-      New high score!
-      
-      """;
+          
+          New high score!
+          
+          """;
     }
 
     continueGame += """
-    
-    
-    Press SPACE to restart.
-    """;
+        
+        
+        Press SPACE to restart.
+        """;
 
     Text text = new Text(continueGame);
 

@@ -5,6 +5,7 @@ import java.util.Scanner;
 import javafx.scene.paint.Color;
 
 public class LevelMap {
+
   private String myMapFilePath;
   private Block[][] myBlocks;
   private int myInitialMaxHealth;
@@ -17,7 +18,8 @@ public class LevelMap {
   public static final int MAX_BLOCKS_PER_ROW_AND_COLUMN = 50;
 
   /**
-   * @param levelNumber number of level, for filename. For example, value of 1 will use file lvl_01.txt
+   * @param levelNumber number of level, for filename. For example, value of 1 will use file
+   *                    lvl_01.txt
    */
   public LevelMap(int levelNumber, double screenWidth, double screenHeight) {
     String filename = Util.getLevelFilename(levelNumber);
@@ -56,10 +58,8 @@ public class LevelMap {
 
   /**
    * Returns an empty but correctly-sized Block[][] 2D array based on the number of rows and columns
-   * of integers in the file.
-   * Returns size-zero array if file input is invalid, such as if rows do not contain the same
-   * number of integers.
-   * Adapted from Scanner code written by ChatGPT.
+   * of integers in the file. Returns size-zero array if file input is invalid, such as if rows do
+   * not contain the same number of integers. Adapted from Scanner code written by ChatGPT.
    */
   private Block[][] getBlockMapTemplate(String sourceFilePath) {
     InputStream sourceInputStream = getInputStreamFromPath(sourceFilePath);
@@ -79,8 +79,7 @@ public class LevelMap {
       }
       if (initialColumnCount < 0) {
         initialColumnCount = columnCount;
-      }
-      else if (initialColumnCount != columnCount) {
+      } else if (initialColumnCount != columnCount) {
         // If a row doesn't have the same number of blocks as the row above it, return size-0 array
         System.out.println("Error: Different rows have a different amount of integers.");
         return new Block[0][0];
@@ -100,7 +99,9 @@ public class LevelMap {
 
   /**
    * Converts a .txt file into Blocks based on the integer values in the file
-   * @param sourceFilePath filepath of .txt file containing number "picture" for block configuration
+   *
+   * @param sourceFilePath filepath of .txt file containing number "picture" for block
+   *                       configuration
    */
   private void storeBlocksFromFile(String sourceFilePath,
       double screenWidth, double screenHeight) {
@@ -109,7 +110,7 @@ public class LevelMap {
     if (myBlocks.length != 0 && myBlocks[0].length != 0) {
       double blockWidth = Util.divideSpaceByElement(screenWidth, myBlocks[0].length);
       double blockHeight = Util.divideSpaceByElement(
-          screenHeight*(BLOCK_VERTICAL_SPACE_USAGE), myBlocks.length);
+          screenHeight * (BLOCK_VERTICAL_SPACE_USAGE), myBlocks.length);
 
       InputStream sourceInputStream = getInputStreamFromPath(sourceFilePath);
       Scanner scanner = new Scanner(sourceInputStream);

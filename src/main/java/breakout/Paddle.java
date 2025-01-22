@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Paddle {
+
   public static final int PADDLE_WIDTH = 150;
   public static final int PADDLE_HEIGHT = 10;
   public static final int PADDLE_SPEED = 30;
@@ -20,8 +21,8 @@ public class Paddle {
    */
   public Paddle(int scene_width, int scene_height) {
     // paddle starts at bottom-center of the scene
-    start_x = scene_width/2 - PADDLE_WIDTH/2;
-    start_y = (scene_height/15)*14 - PADDLE_HEIGHT/2;
+    start_x = scene_width / 2 - PADDLE_WIDTH / 2;
+    start_y = (scene_height / 15) * 14 - PADDLE_HEIGHT / 2;
     myShape = new Rectangle(start_x, start_y, PADDLE_WIDTH, PADDLE_HEIGHT);
     myShape.setFill(Color.WHITE);
   }
@@ -34,26 +35,29 @@ public class Paddle {
   }
 
   /**
-   * Move paddle left if not contacting left screen edge (else, do not move).
-   * elapsedTime is used to ensure consistent speed across different machines. (Robert C. Duvall)
+   * Move paddle left if not contacting left screen edge (else, do not move). elapsedTime is used to
+   * ensure consistent speed across different machines. (Robert C. Duvall)
    */
-  public void moveLeft () {
-    if (! isContactingLeftEdge())
-      setX(getX() + -1*PADDLE_SPEED);
-    else
+  public void moveLeft() {
+    if (!isContactingLeftEdge()) {
+      setX(getX() + -1 * PADDLE_SPEED);
+    } else {
       setX(0);
+    }
   }
 
   /**
-   * Move paddle right if not contacting right screen edge (else, do not move).
-   * elapsedTime is used to ensure consistent speed across different machines. (Robert C. Duvall)
+   * Move paddle right if not contacting right screen edge (else, do not move). elapsedTime is used
+   * to ensure consistent speed across different machines. (Robert C. Duvall)
    */
-  public void moveRight (int sceneWidth) {
-    if (! isContactingRightEdge(sceneWidth))
+  public void moveRight(int sceneWidth) {
+    if (!isContactingRightEdge(sceneWidth)) {
       setX(getX() + PADDLE_SPEED);
-    else
-      // left corner of paddle is PADDLE_WIDTH distance from right scene edge
+    } else
+    // left corner of paddle is PADDLE_WIDTH distance from right scene edge
+    {
       setX(sceneWidth - PADDLE_WIDTH);
+    }
   }
 
   /**
@@ -136,7 +140,7 @@ public class Paddle {
   /**
    * Reset paddle to its start position.
    */
-  public void reset () {
+  public void reset() {
     setX(start_x);
     setY(start_y);
   }

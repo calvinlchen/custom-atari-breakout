@@ -5,10 +5,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * ADAPTED FROM: Robert C. Duvall's "Bouncer" class (<a href="https://coursework.cs.duke.edu/compsci308_2025spring/lab_bounce/-/blob/95c5d61cca4390e96f0a944670bf5a01094ed2f1/src/main/java/bounce/Bouncer.java">...</a>)
+ * ADAPTED FROM: Robert C. Duvall's "Bouncer" class (<a
+ * href="https://coursework.cs.duke.edu/compsci308_2025spring/lab_bounce/-/blob/95c5d61cca4390e96f0a944670bf5a01094ed2f1/src/main/java/bounce/Bouncer.java">...</a>)
  * Defines the ball which bounces off the paddle and is used to break game blocks.
  */
 public class Ball {
+
   public static final int BALL_SPEED = 230;
   public static final int BALL_SIZE = 30;
 
@@ -19,7 +21,7 @@ public class Ball {
   private final double start_x;
   private final double start_y;
 
-  public Ball (Image image, int screenWidth, int screenHeight) {
+  public Ball(Image image, int screenWidth, int screenHeight) {
     myView = new ImageView(image);
     myView.setFitWidth(BALL_SIZE);
     myView.setFitHeight(BALL_SIZE);
@@ -33,12 +35,12 @@ public class Ball {
   }
 
   /**
-   * Move by taking one step based on its velocity.
-   * Note, elapsedTime is used to ensure consistent speed across different machines.
+   * Move by taking one step based on its velocity. Note, elapsedTime is used to ensure consistent
+   * speed across different machines.
    *
    * @author Robert C. Duvall
    */
-  public void move (double elapsedTime) {
+  public void move(double elapsedTime) {
     myView.setX(getX() + myVelocity.getX() * elapsedTime);
     myView.setY(getY() + myVelocity.getY() * elapsedTime);
   }
@@ -61,14 +63,14 @@ public class Ball {
   /**
    * Returns true when ball is at or below the floor (bottom edge) of screen
    */
-  public boolean isContactingFloor (double screenHeight) {
+  public boolean isContactingFloor(double screenHeight) {
     return getY() + getHeight() > screenHeight;
   }
 
   /**
    * Stops the ball's motion
    */
-  public void stopMotion () {
+  public void stopMotion() {
     myVelocity = new Point2D(0, 0);
   }
 
@@ -166,7 +168,7 @@ public class Ball {
   /**
    * Reset ball to start position and zero velocity.
    */
-  public void reset () {
+  public void reset() {
     myView.setX(start_x);
     myView.setY(start_y);
     myVelocity = new Point2D(0, 0);
@@ -191,7 +193,7 @@ public class Ball {
    *
    * @author Robert C. Duvall
    */
-  public ImageView getView () {
+  public ImageView getView() {
     return myView;
   }
 }

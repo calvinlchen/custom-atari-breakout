@@ -5,6 +5,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class Block {
+
   private int myHealth;
 
   private final Rectangle myShape;
@@ -41,14 +42,14 @@ public class Block {
    * Creates a block for the LevelMap array with the proper characteristics based on the provided
    * health value (typically from the source file)
    */
-  public static Block createBlockFor2dArrayWithParameters( int arrayMapRow, int arrayMapColumn,
+  public static Block createBlockFor2dArrayWithParameters(int arrayMapRow, int arrayMapColumn,
       double blockWidth, double blockHeight, int healthValue, LevelMap levelMap) {
     if (healthValue < 1) {
       // If file integer is 0, create an off-screen "broken" block
-      return Block.createEmptyBlock(arrayMapColumn*blockWidth,
-          arrayMapRow*blockHeight, blockWidth, blockHeight, levelMap);
+      return Block.createEmptyBlock(arrayMapColumn * blockWidth,
+          arrayMapRow * blockHeight, blockWidth, blockHeight, levelMap);
     }
-    return new Block(arrayMapColumn*blockWidth, arrayMapRow*blockHeight,
+    return new Block(arrayMapColumn * blockWidth, arrayMapRow * blockHeight,
         blockWidth, blockHeight, healthValue, levelMap);
   }
 
@@ -96,8 +97,7 @@ public class Block {
   }
 
   /**
-   * Returns whether a ball is intersecting this block.
-   * Adapted from code authored by ChatGPT.
+   * Returns whether a ball is intersecting this block. Adapted from code authored by ChatGPT.
    */
   public boolean intersects(Ball ball) {
     return (ball.getRightEdgeX() >= getX())         // ball's right edge >= block's left
@@ -107,8 +107,8 @@ public class Block {
   }
 
   /**
-   * Returns the amount of x-axis overlap between this block and the given ball.
-   * Adapted from code authored by ChatGPT.
+   * Returns the amount of x-axis overlap between this block and the given ball. Adapted from code
+   * authored by ChatGPT.
    */
   private double calculateXOverlap(Ball ball) {
     double ballRight = ball.getRightEdgeX();
@@ -117,8 +117,8 @@ public class Block {
   }
 
   /**
-   * Returns the amount of y-axis overlap between this block and the given ball.
-   * Adapted from code authored by ChatGPT.
+   * Returns the amount of y-axis overlap between this block and the given ball. Adapted from code
+   * authored by ChatGPT.
    */
   private double calculateYOverlap(Ball ball) {
     double ballBottom = ball.getBottomEdgeY();
@@ -135,8 +135,8 @@ public class Block {
   }
 
   /**
-   * Calculate overlap between block and ball, and "bounce" ball velocity accordingly.
-   * Adapted from code authored by ChatGPT.
+   * Calculate overlap between block and ball, and "bounce" ball velocity accordingly. Adapted from
+   * code authored by ChatGPT.
    */
   public void bounceBall(Ball ball) {
     double overlapX = calculateXOverlap(ball);
@@ -194,8 +194,8 @@ public class Block {
   }
 
   /**
-   * Updates a block's color to the correct gradient of the main color based on its health.
-   * Adapted from code authored by ChatGPT.
+   * Updates a block's color to the correct gradient of the main color based on its health. Adapted
+   * from code authored by ChatGPT.
    */
   public void updateColorForHealth() {
     int currentHealth = getHealth();
@@ -207,7 +207,7 @@ public class Block {
     int levelMaxBlockHealth = myLevelMap.getInitialMaxHealth();
 
     double fraction =
-        (double)(levelMaxBlockHealth - currentHealth) / (levelMaxBlockHealth - 1);
+        (double) (levelMaxBlockHealth - currentHealth) / (levelMaxBlockHealth - 1);
 
     double brightnessRange = MAX_BLOCK_BRIGHTNESS_FACTOR - MIN_BLOCK_BRIGHTNESS_FACTOR;
     double brightnessFactor = MIN_BLOCK_BRIGHTNESS_FACTOR + fraction * brightnessRange;
@@ -230,6 +230,7 @@ public class Block {
 
   /**
    * Sets the fill color of the block
+   *
    * @param color Paint object representing color
    */
   public void setColor(Paint color) {

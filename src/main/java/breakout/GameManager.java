@@ -16,9 +16,10 @@ import javafx.util.Duration;
 
 public class GameManager {
   private int myLivesRemaining;
-  private int myCurrentLevel;
+  private int myCurrentLevelNumber;
   private int myScore;
   private int myHighScore;
+  private List<Integer> myLevelNumbers;
 
   private Group mySceneRoot;
   private Stage myStage;
@@ -31,33 +32,73 @@ public class GameManager {
   private int mySceneWidth;
   private int mySceneHeight;
 
-  public static final String BALL_IMAGE = "/ball/basketball.png";
-  public static final String MAPS_FILE_PREFIX = "/maps/";
-  public static final String COLORS_FILE_PREFIX = "/colors/";
-
   private Timeline myAnimation;
   public static final int FRAMES_PER_SECOND = 60;
   public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
 
   public static final int SCORE_INCREMENT = 100;
+  public static final int START_LIVES = 3;
 
-  public GameManager(int sceneWidth, int sceneHeight, Stage stage) {
-    myLivesRemaining = 3;
-    myCurrentLevel = 0;
-    myScore = 0;
+  public GameManager(int sceneWidth, int sceneHeight, Stage stage, List<Integer> levelNumbers) {
+    setVariablesToInitialState();
     myHighScore = 0;
-
-    myScoreText = createScoreText();
-    myLivesText = createLivesText();
+    myLevelNumbers = levelNumbers;
 
     mySceneWidth = sceneWidth;
     mySceneHeight = sceneHeight;
     myStage = stage;
-
   }
 
-  public void startLevel(int levelNumber) {
-    myCurrentLevel = levelNumber;
+  public void startScreen() {
+    // Sets number of lives, current score, etc. to initial state
+    setVariablesToInitialState();
+
+    // Create a root node (Group, Pane, or any other layout)
+    mySceneRoot = new Group();
+
+    // Text for game instructions
+    Text titleText = new Text(
+        """
+        Welcome to Basketball Bouncer!
+
+        Break as many blocks with the ball as you can to score points.
+        If the ball hits the bottom edge, you lose a life!
+        (You start with """ + START_LIVES + """
+         lives.)
+
+        Move the paddle with your left and right arrow keys
+        so that the ball doesn't hit the floor.
+
+        High score: """ + myHighScore + """
+
+        Press SPACE to start!
+        """
+    );
+
+    titleText.setFill(Color.WHITE);
+    titleText.setX(50);  // adjust for positioning
+    titleText.setY(100);
+    titleText.setFont(Font.font(24)); // choose a bigger font if you like
+
+    mySceneRoot.getChildren().add(titleText);
+
+    initializeScene();
+  }
+
+  private void setVariablesToInitialState() {
+    myLivesRemaining = START_LIVES;
+    myCurrentLevelNumber = 0;
+    myScore = 0;
+
+    myScoreText = createScoreText();
+    myLivesText = createLivesText();
+  }
+
+  private void startLevel(int levelNumber) {
+    // Stop any existing animation
+    myAnimation.stop();
+
+    myCurrentLevelNumber = levelNumber;
     String levelName = Util.getLevelFilename(levelNumber);
     mySceneRoot = createSceneRoot(levelName);
     initializeScene();
@@ -70,7 +111,7 @@ public class GameManager {
    */
   private Group createSceneRoot(String levelName) {
     // Create Block objects from file, store in LevelMap
-    LevelMap levelMap = new LevelMap(MAPS_FILE_PREFIX+levelName+".txt",
+    LevelMap levelMap = new LevelMap(myCurrentLevelNumber,
         mySceneWidth, mySceneHeight);
 
     // Create paddle
@@ -121,24 +162,27 @@ public class GameManager {
    * Actions taken per step
    */
   private void step (double elapsedTime) {
-    if (checkLevelComplete()) {
-      myAnimation.stop();
-    }
+    // Only run step methods if not on the start screen
+    if (myCurrentLevelNumber > 0) {
+      if (checkLevelComplete()) {
+        myAnimation.stop();
+      }
 
-    for (Ball ball : myBalls) {
-      // Check and bounce off wall/ceiling if necessary
-      ball.checkAndBounceEdge(mySceneWidth);
+      for (Ball ball : myBalls) {
+        // Check and bounce off wall/ceiling if necessary
+        ball.checkAndBounceEdge(mySceneWidth);
 
-      // Check and bounce the ball off paddle if necessary
-      myPaddle.checkAndBounceBall(ball);
+        // Check and bounce the ball off paddle if necessary
+        myPaddle.checkAndBounceBall(ball);
 
-      // Check and bounce the ball off a block if contacting
-      checkBlocksAndBounceBall(ball);
+        // Check and bounce the ball off a block if contacting
+        checkBlocksAndBounceBall(ball);
 
-      ball.move(elapsedTime);
+        ball.move(elapsedTime);
 
-      if (ball.isContactingFloor(mySceneHeight)) {
-        whenBallHitsFloor(ball);
+        if (ball.isContactingFloor(mySceneHeight)) {
+          whenBallHitsFloor(ball);
+        }
       }
     }
   }
@@ -177,7 +221,7 @@ public class GameManager {
   }
 
   private boolean checkLevelComplete() {
-    System.out.println(myBlocks);
+    // System.out.println(myBlocks);
     return myBlocks.isEmpty();
   }
 
@@ -190,13 +234,19 @@ public class GameManager {
     myScoreText.setText(getScoreTextString());
   }
 
+  private void checkAndUpdateHighScore(int newScore) {
+    if (newScore > myHighScore) {
+      myHighScore = newScore;
+    }
+  }
+
   /**
    * Actions taken when a player loses the game (has no lives remaining)
    */
   private void whenPlayerLoses() {
     myLivesText.setText(getLivesTextString());
     myLivesText.setFill(Color.RED);
-
+    checkAndUpdateHighScore(myScore);
     myAnimation.stop();
   }
 
@@ -237,13 +287,31 @@ public class GameManager {
       myPaddle.moveLeft();
     }
     if (code == KeyCode.SPACE) {
-      if (myLivesRemaining > 0) {
-        setAllBallsInMotion();
+      // If game hasn't started, then pressing space opens first level
+      if (myCurrentLevelNumber == 0) {
+        startLevel(myLevelNumbers.getFirst());
+      }
+      // If a level has been completed, then pressing space initializes the next level
+      else if (checkLevelComplete()) {
+        startLevel(getNextLevelNumber());
+      }
+      // If the player has already lost, then pressing space goes back to the start screen
+      else if (checkPlayerLost()) {
+        startScreen();
+      }
+      // During a level, press space to set any non-moving balls into motion
+      else {
+        setStillBallsInMotion();
       }
     }
   }
 
-  private void setAllBallsInMotion() {
+  private int getNextLevelNumber() {
+    int index = myLevelNumbers.indexOf(myCurrentLevelNumber);
+    return myLevelNumbers.get(index + 1);
+  }
+
+  private void setStillBallsInMotion() {
     for(Ball ball : myBalls) {
       if (!ball.isMoving()) {
         ball.startMotion();
@@ -256,7 +324,7 @@ public class GameManager {
    * @return new Ball object
    */
   private Ball createBall() {
-    return new Ball(new Image(getClass().getResourceAsStream(BALL_IMAGE)), mySceneWidth, mySceneHeight);
+    return new Ball(new Image(getClass().getResourceAsStream(Main.BALL_IMAGE)), mySceneWidth, mySceneHeight);
   }
 
   /**

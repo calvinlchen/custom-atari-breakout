@@ -35,7 +35,6 @@ public class LevelMap {
     if (myInitialMaxHealth > 0) {
       // Store main color for level blocks
       String colorFilename = Main.COLORS_FILE_PREFIX + filename + "_color.txt";
-      System.out.println(colorFilename);
       myMainColor = getColorFromFile(colorFilename);
 
       // Set block colors according to myMainColor and block health values

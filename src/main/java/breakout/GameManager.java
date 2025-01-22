@@ -271,6 +271,10 @@ public class GameManager {
     if (code == KeyCode.Q) {
       setHighScoreResetGame();
     }
+    // Cheat key R: reset paddle and ball to starting positions.
+    if (code == KeyCode.R) {
+      resetPaddleAndBalls();
+    }
     if (code == KeyCode.SPACE) {
       handleSpaceBar();
     }
@@ -280,6 +284,13 @@ public class GameManager {
     checkAndUpdateHighScore(myScore);
     myAnimation.stop();
     startScreen();
+  }
+
+  private void resetPaddleAndBalls() {
+    myPaddle.reset();
+    for (Ball ball : myBalls) {
+      ball.reset();
+    }
   }
 
   private void handleSpaceBar() {

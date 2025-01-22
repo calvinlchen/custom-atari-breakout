@@ -1,7 +1,6 @@
 package breakout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -122,6 +121,10 @@ public class GameManager {
    * Actions taken per step
    */
   private void step (double elapsedTime) {
+    if (checkLevelComplete()) {
+      myAnimation.stop();
+    }
+
     for (Ball ball : myBalls) {
       // Check and bounce off wall/ceiling if necessary
       ball.checkAndBounceEdge(mySceneWidth);
@@ -147,9 +150,11 @@ public class GameManager {
   private void checkBlocksAndBounceBall(Ball ball) {
     for (Block block : myBlocks) {
       if (block.checkIfShouldBounce(ball)) {
-        block.bounceBall(ball);
         incrementScore();
-        block.hitBlockActions();
+        block.hitBlockActions(ball);
+        if (block.isBroken()) {
+          myBlocks.remove(block);
+        }
         // skips rest of the loop after the first block bounce
         break;
       }
@@ -161,7 +166,7 @@ public class GameManager {
    */
   private void whenBallHitsFloor(Ball ball) {
     myLivesRemaining--;
-    if (! checkGameOver()) {
+    if (! checkPlayerLost()) {
       myLivesText.setText(getLivesTextString());
       ball.reset();
     }
@@ -171,7 +176,12 @@ public class GameManager {
     }
   }
 
-  private boolean checkGameOver() {
+  private boolean checkLevelComplete() {
+    System.out.println(myBlocks);
+    return myBlocks.isEmpty();
+  }
+
+  private boolean checkPlayerLost() {
     return myLivesRemaining <= 0;
   }
 
@@ -276,7 +286,11 @@ public class GameManager {
   private void resetBlocksToLevelMap(LevelMap levelMap) {
     myBlocks = new ArrayList<>();
     for (Block[] blockRow : levelMap.getBlocks()) {
-      myBlocks.addAll(Arrays.asList(blockRow));
+      for (Block block : blockRow) {
+        if (! block.isBroken()) {
+          myBlocks.add(block);
+        }
+      }
     }
   }
 }

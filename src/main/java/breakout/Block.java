@@ -178,12 +178,13 @@ public class Block {
   /**
    * Completes actions that occur on a block when it is hit by a ball.
    */
-  public void hitBlockActions() {
+  public void hitBlockActions(Ball ball) {
     decreaseHealth();
     if (isBroken()) {
       makeInvisible();
     }
     updateColorForHealth();
+    bounceBall(ball);
   }
 
   /**

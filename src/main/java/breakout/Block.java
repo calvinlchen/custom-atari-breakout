@@ -145,33 +145,39 @@ public class Block {
     if (overlapX < overlapY) {    // Ball hit from left or right side
 
       ball.reverseXSpeed();
-
-      // Move ball outside the block
-      if (ball.getX() < getX()) {
-        // when ball is to the left of block
-        ball.setX(getX() - ball.getWidth());  // place ball directly to the left of the block
-      } else {
-        // when ball is to the right of block
-        ball.setX(getRightEdgeX());
-      }
+      moveBallOutsideBlockX(ball);
 
     } else if (overlapY < overlapX) {   // Ball hit from top or bottom
 
       ball.reverseYSpeed();
-
-      // Move ball outside the block
-      if (ball.getY() < getY()) {
-        // when ball is above block
-        ball.setY(getY() - ball.getHeight());
-      } else {
-        // when ball is below block
-        ball.setY(getBottomEdgeY());
-      }
+      moveBallOutsideBlockY(ball);
 
     } else {
       // Perfect corner case -> reverse both x and y velocities
       ball.reverseXSpeed();
       ball.reverseYSpeed();
+    }
+  }
+
+  private void moveBallOutsideBlockX(Ball ball) {
+    // Move ball outside the block
+    if (ball.getX() < getX()) {
+      // when ball is to the left of block
+      ball.setX(getX() - ball.getWidth());  // place ball directly to the left of the block
+    } else {
+      // when ball is to the right of block
+      ball.setX(getRightEdgeX());
+    }
+  }
+
+  private void moveBallOutsideBlockY(Ball ball) {
+    // Move ball outside the block
+    if (ball.getY() < getY()) {
+      // when ball is above block
+      ball.setY(getY() - ball.getHeight());
+    } else {
+      // when ball is below block
+      ball.setY(getBottomEdgeY());
     }
   }
 

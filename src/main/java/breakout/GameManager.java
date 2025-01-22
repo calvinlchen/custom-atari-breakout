@@ -36,6 +36,7 @@ public class GameManager {
   public static final String MAPS_FILE_PREFIX = "/maps/";
   public static final String COLORS_FILE_PREFIX = "/colors/";
 
+  private Timeline myAnimation;
   public static final int FRAMES_PER_SECOND = 60;
   public static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
 
@@ -48,6 +49,7 @@ public class GameManager {
     myHighScore = 0;
 
     myScoreText = createScoreText();
+    myLivesText = createLivesText();
 
     mySceneWidth = sceneWidth;
     mySceneHeight = sceneHeight;
@@ -89,7 +91,8 @@ public class GameManager {
       root.getChildren().add(block.getShape());
     }
 
-    root.getChildren().add(myScoreText);
+    // Add Text elements
+    root.getChildren().addAll(myScoreText, myLivesText);
 
     return root;
   }
@@ -108,11 +111,11 @@ public class GameManager {
     scene.setOnKeyPressed(e -> handleKeyInput(e.getCode()));
 
     // attach "game loop" to timeline to play it (basically just calling step() method repeatedly forever)
-    Timeline animation = new Timeline();
-    animation.setCycleCount(Timeline.INDEFINITE);
-    animation.getKeyFrames().add(new KeyFrame(
+    myAnimation = new Timeline();
+    myAnimation.setCycleCount(Timeline.INDEFINITE);
+    myAnimation.getKeyFrames().add(new KeyFrame(
         Duration.seconds(SECOND_DELAY), e -> step(SECOND_DELAY)));
-    animation.play();
+    myAnimation.play();
   }
 
   /**
@@ -158,13 +161,18 @@ public class GameManager {
    */
   private void whenBallHitsFloor(Ball ball) {
     myLivesRemaining--;
-    if (myLivesRemaining > 0) {
+    if (! checkGameOver()) {
+      myLivesText.setText(getLivesTextString());
       ball.reset();
     }
     else {
       ball.stopMotion();
       whenPlayerLoses();
     }
+  }
+
+  private boolean checkGameOver() {
+    return myLivesRemaining <= 0;
   }
 
   private void incrementScore() {
@@ -176,20 +184,36 @@ public class GameManager {
    * Actions taken when a player loses the game (has no lives remaining)
    */
   private void whenPlayerLoses() {
+    myLivesText.setText(getLivesTextString());
+    myLivesText.setFill(Color.RED);
 
+    myAnimation.stop();
   }
 
   private Text createScoreText() {
     Text scoreText = new Text(getScoreTextString());
     scoreText.setFill(Color.WHITE);
-    scoreText.setX(Main.SCENE_WIDTH * 0.1);
-    scoreText.setY(Main.SCENE_HEIGHT * 0.95);
+    scoreText.setX(Main.SCENE_WIDTH * 0.1);   // Place text near left edge of screen
+    scoreText.setY(Main.SCENE_HEIGHT * 0.95); // Place text near bottom edge
     scoreText.setFont(new Font(Main.BODY_FONT_SIZE));
     return scoreText;
   }
 
+  private Text createLivesText() {
+    Text livesText = new Text(getLivesTextString());
+    livesText.setFill(Color.WHITE);
+    livesText.setX(Main.SCENE_WIDTH * 0.75);  // Place text near right edge of screen
+    livesText.setY(Main.SCENE_HEIGHT * 0.95); // Place text near bottom edge
+    livesText.setFont(new Font(Main.BODY_FONT_SIZE));
+    return livesText;
+  }
+
   private String getScoreTextString() {
     return "Score: " + myScore;
+  }
+
+  private String getLivesTextString() {
+    return "Lives remaining: " + myLivesRemaining;
   }
 
   /**

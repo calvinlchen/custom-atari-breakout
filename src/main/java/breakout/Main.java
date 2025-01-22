@@ -11,9 +11,10 @@ public class Main extends Application {
 
     // useful names for constant values used
     public static final String TITLE = "Basketball Bouncer";
-    public static final Color DUKE_BLUE = new Color(0, 0.325, 0.608, 1);
+    public static final Color DUKE_BLUE = Util.hexToColor("#00539b");
     public static final int SCENE_WIDTH = 1000;
     public static final int SCENE_HEIGHT = 750;
+    public static final int BODY_FONT_SIZE = 18;
 
     /**
      * Start the application.

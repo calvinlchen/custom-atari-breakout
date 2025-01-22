@@ -50,6 +50,54 @@ public class GameText {
     return text;
   }
 
+  public static Text getEndingText(boolean playerWon, boolean newHighScore, int highScore,
+      int score) {
+
+    String continueGame;
+
+    if (playerWon) {
+      continueGame = """
+      Congratulations, you won!!
+      
+      """;
+    }
+    else {
+      continueGame = """
+      Game Over
+      
+      """;
+    }
+
+    continueGame += """
+    
+    Your score: %d
+    High score: %d
+    """.formatted(score, highScore);
+
+    if(newHighScore) {
+      continueGame += """
+      
+      New high score!
+      
+      """;
+    }
+
+    continueGame += """
+    
+    
+    Press SPACE to restart.
+    """;
+
+    Text text = new Text(continueGame);
+
+    text.setFill(Color.WHITE);
+    text.setX(50);
+    text.setY(100);
+    text.setFont(Font.font(32));
+
+    return text;
+  }
+
   public static Text getScoreText(int score) {
     Text scoreText = new Text(scoreToString(score));
     scoreText.setFill(Color.WHITE);

@@ -143,8 +143,14 @@ public class GameManager {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
-        addTextToRoot(GameText.getLevelCompleteText(myCurrentLevelNumber));
-        myAnimation.stop();
+        // When there are no more levels
+        if (getNextLevelNumber() < 0) {
+          whenGameEnd(true);
+        }
+        else {
+          addTextToRoot(GameText.getLevelCompleteText(myCurrentLevelNumber));
+          myAnimation.stop();
+        }
       }
 
       for (Ball ball : myBalls) {
@@ -210,13 +216,19 @@ public class GameManager {
 
   private void incrementScore() {
     myScore += SCORE_INCREMENT;
-    myScoreText.setText(GameText.scoreToString(myLivesRemaining));
+    myScoreText.setText(GameText.scoreToString(myScore));
   }
 
-  private void checkAndUpdateHighScore(int newScore) {
+  /**
+   * @param newScore Game score to compare to the current high score
+   * @return True if new high score, false if not new high score
+   */
+  private boolean checkAndUpdateHighScore(int newScore) {
     if (newScore > myHighScore) {
       myHighScore = newScore;
+      return true;
     }
+    return false;
   }
 
   /**
@@ -225,7 +237,17 @@ public class GameManager {
   private void whenPlayerLoses() {
     myLivesText.setText(GameText.livesToString(myLivesRemaining));
     myLivesText.setFill(Color.RED);
-    checkAndUpdateHighScore(myScore);
+    // Display game-end splash screen
+    whenGameEnd(false);
+  }
+
+  /**
+   * When game is over
+   */
+  private void whenGameEnd(boolean playerWon) {
+    boolean newHighScore = checkAndUpdateHighScore(myScore);
+    mySceneRoot.getChildren().add(GameText.getEndingText(
+        playerWon, newHighScore, myHighScore, myScore));
     myAnimation.stop();
   }
 
@@ -246,7 +268,14 @@ public class GameManager {
       }
       // If a level has been completed, then pressing space initializes the next level
       else if (checkLevelComplete()) {
-        startLevel(getNextLevelNumber());
+        int nextLevelNumber = getNextLevelNumber();
+        // Unless there are no more levels, then it redirects to start screen to restart game
+        if (nextLevelNumber < 0) {
+          startScreen();
+        }
+        else {
+          startLevel(nextLevelNumber);
+        }
       }
       // If the player has already lost, then pressing space goes back to the start screen
       else if (checkPlayerLost()) {

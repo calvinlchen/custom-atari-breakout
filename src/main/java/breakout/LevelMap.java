@@ -5,7 +5,7 @@ import java.util.Scanner;
 import javafx.scene.paint.Color;
 
 public class LevelMap {
-  private String mySourceFilePath;
+  private String myMapFilePath;
   private Block[][] myBlocks;
   private int myInitialMaxHealth;
 
@@ -16,24 +16,24 @@ public class LevelMap {
   public final double BLOCK_VERTICAL_SPACE_USAGE = 0.75;
 
   /**
-   * Constructs
-   * @param filepath name/path of .txt file containing level block layout as integers
+   * @param levelNumber number of level, for filename. For example, value of 1 will use file lvl_01.txt
    */
-  public LevelMap(String filepath, double screenWidth, double screenHeight) {
-    mySourceFilePath = filepath;
+  public LevelMap(int levelNumber, double screenWidth, double screenHeight) {
+    String filename = Util.getLevelFilename(levelNumber);
+    myMapFilePath = Main.MAPS_FILE_PREFIX + filename + ".txt";
 
     // Creates 2D array template based on how many values are in the file
-    myBlocks = getBlockMapTemplate(filepath);
+    myBlocks = getBlockMapTemplate(myMapFilePath);
 
     // Store actual Blocks into the array based on source-file values
-    storeBlocksFromFile(filepath, screenWidth, screenHeight);
+    storeBlocksFromFile(myMapFilePath, screenWidth, screenHeight);
 
     // Store the current max health value among all blocks
     setInitialMaxHealth();
 
     if (myInitialMaxHealth > 0) {
       // Store main color for level blocks
-      String colorFilename = "/colors/lvl_01_color.txt";
+      String colorFilename = Main.COLORS_FILE_PREFIX + filename + "_color.txt";
       System.out.println(colorFilename);
       myMainColor = getColorFromFile(colorFilename);
 
@@ -183,6 +183,6 @@ public class LevelMap {
    * Returns the filepath of the source file for this level block mapping
    */
   public String getSourceFilePath() {
-    return mySourceFilePath;
+    return myMapFilePath;
   }
 }

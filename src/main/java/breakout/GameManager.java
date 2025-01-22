@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -57,33 +56,9 @@ public class GameManager {
     // Sets number of lives, current score, etc. to initial state
     setVariablesToInitialState();
 
-    // Create a root node (Group, Pane, or any other layout)
+    // Create root and add title-screen text
     mySceneRoot = new Group();
-
-    // Text for game instructions
-    String startInstructions = """
-        Welcome to Basketball Bouncer!
-
-        Break as many blocks with the ball as you can to score points.
-        If the ball hits the bottom edge, you lose a life!
-        (You start with %d lives.)
-
-        Move the paddle with your left and right arrow keys
-        so that the ball doesn't hit the floor.
-
-        High score: %d
-
-        Press SPACE to start!
-        """.formatted(START_LIVES, myHighScore);
-
-    Text titleText = new Text(startInstructions);
-
-    titleText.setFill(Color.WHITE);
-    titleText.setX(50);
-    titleText.setY(100);
-    titleText.setFont(Font.font(24));
-
-    mySceneRoot.getChildren().add(titleText);
+    addTextToRoot(GameText.getStartScreenText(START_LIVES, myHighScore));
 
     initializeScene();
   }
@@ -93,8 +68,8 @@ public class GameManager {
     myCurrentLevelNumber = 0;
     myScore = 0;
 
-    myScoreText = createScoreText();
-    myLivesText = createLivesText();
+    myScoreText = GameText.getScoreText(myScore);
+    myLivesText = GameText.getLivesText(myLivesRemaining);
   }
 
   private void startLevel(int levelNumber) {
@@ -168,7 +143,7 @@ public class GameManager {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
-        displayLevelCompleteText();
+        addTextToRoot(GameText.getLevelCompleteText(myCurrentLevelNumber));
         myAnimation.stop();
       }
 
@@ -189,24 +164,6 @@ public class GameManager {
         }
       }
     }
-  }
-
-  private void displayLevelCompleteText() {
-    // Text for game instructions
-    String continueInstructions = """
-    Level %d complete!
-    
-    Press SPACE to continue
-    """.formatted(myCurrentLevelNumber);
-
-    Text text = new Text(continueInstructions);
-
-    text.setFill(Color.WHITE);
-    text.setX(50);
-    text.setY(100);
-    text.setFont(Font.font(32));
-
-    mySceneRoot.getChildren().add(text);
   }
 
   /**
@@ -233,7 +190,7 @@ public class GameManager {
   private void whenBallHitsFloor(Ball ball) {
     myLivesRemaining--;
     if (! checkPlayerLost()) {
-      myLivesText.setText(getLivesTextString());
+      myLivesText.setText(GameText.livesToString(myLivesRemaining));
       ball.reset();
     }
     else {
@@ -253,7 +210,7 @@ public class GameManager {
 
   private void incrementScore() {
     myScore += SCORE_INCREMENT;
-    myScoreText.setText(getScoreTextString());
+    myScoreText.setText(GameText.scoreToString(myLivesRemaining));
   }
 
   private void checkAndUpdateHighScore(int newScore) {
@@ -266,36 +223,10 @@ public class GameManager {
    * Actions taken when a player loses the game (has no lives remaining)
    */
   private void whenPlayerLoses() {
-    myLivesText.setText(getLivesTextString());
+    myLivesText.setText(GameText.livesToString(myLivesRemaining));
     myLivesText.setFill(Color.RED);
     checkAndUpdateHighScore(myScore);
     myAnimation.stop();
-  }
-
-  private Text createScoreText() {
-    Text scoreText = new Text(getScoreTextString());
-    scoreText.setFill(Color.WHITE);
-    scoreText.setX(Main.SCENE_WIDTH * 0.1);   // Place text near left edge of screen
-    scoreText.setY(Main.SCENE_HEIGHT * 0.95); // Place text near bottom edge
-    scoreText.setFont(new Font(Main.BODY_FONT_SIZE));
-    return scoreText;
-  }
-
-  private Text createLivesText() {
-    Text livesText = new Text(getLivesTextString());
-    livesText.setFill(Color.WHITE);
-    livesText.setX(Main.SCENE_WIDTH * 0.75);  // Place text near right edge of screen
-    livesText.setY(Main.SCENE_HEIGHT * 0.95); // Place text near bottom edge
-    livesText.setFont(new Font(Main.BODY_FONT_SIZE));
-    return livesText;
-  }
-
-  private String getScoreTextString() {
-    return "Score: " + myScore;
-  }
-
-  private String getLivesTextString() {
-    return "Lives remaining: " + myLivesRemaining;
   }
 
   /**
@@ -328,9 +259,16 @@ public class GameManager {
     }
   }
 
+  /**
+   * @return -1 if no more levels remaining, otherwise returns level number of next level in List
+   */
   private int getNextLevelNumber() {
     int index = myLevelNumbers.indexOf(myCurrentLevelNumber);
-    return myLevelNumbers.get(index + 1);
+    int nextIndex = index + 1;
+    if (nextIndex >= myLevelNumbers.size()) {
+      return -1;
+    }
+    return myLevelNumbers.get(nextIndex);
   }
 
   private void setStillBallsInMotion() {
@@ -367,6 +305,10 @@ public class GameManager {
     // add new Ball object
     Ball ball = createBall();
     myBalls.add(ball);
+  }
+
+  private void addTextToRoot(Text text) {
+    mySceneRoot.getChildren().add(text);
   }
 
   /**

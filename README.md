@@ -44,6 +44,8 @@ This project implements the game of Breakout with multiple levels.
    * Left and right arrow keys: control paddle movement during gameplay
    * Space bar: used to progress past any text/splash screens, and to set the ball into motion.
  * Cheat keys:
+   * Q - updates high score with current score if applicable, then resets game to start screen.
+   * R - resets paddle and ball to default positions during level
 
 
 
@@ -71,11 +73,13 @@ This project implements the game of Breakout with multiple levels.
    * Restart game after losing all lives
    * High score during single program instance
    * Multi-hit blocks
+   * Custom and non-custom cheat-key
 
  * Features unimplemented:
    * Unbreakable blocks and other special block type(s)
    * Special paddle behaviors
    * Power ups
+   * Additional cheat keys
 
  * Noteworthy Features:
    * Block dimensions are dynamically adjust based on how many rows and columns of blocks are

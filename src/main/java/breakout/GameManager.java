@@ -99,6 +99,10 @@ public class GameManager {
     // Put blocks in List
     resetBlocksToLevelMap(levelMap);
 
+    return addMyElementsToRoot();
+  }
+
+  private Group addMyElementsToRoot() {
     // Create root with paddle, ball, blocks
     Group root = new Group();
     root.getChildren().add(myPaddle.getShape());
@@ -108,10 +112,8 @@ public class GameManager {
     for (Block block : myBlocks) {
       root.getChildren().add(block.getShape());
     }
-
     // Add Text elements
     root.getChildren().addAll(myScoreText, myLivesText);
-
     return root;
   }
 
@@ -143,14 +145,7 @@ public class GameManager {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
-        // When there are no more levels
-        if (getNextLevelNumber() < 0) {
-          whenGameEnd(true);
-        }
-        else {
-          addTextToRoot(GameText.getLevelCompleteText(myCurrentLevelNumber));
-          myAnimation.stop();
-        }
+        actionAfterLevelCompleted();
       }
 
       for (Ball ball : myBalls) {
@@ -169,6 +164,18 @@ public class GameManager {
           whenBallHitsFloor(ball);
         }
       }
+    }
+  }
+
+  private void actionAfterLevelCompleted() {
+    // When there are no more levels
+    if (getNextLevelNumber() < 0) {
+      whenGameEnd(true);
+    }
+    // Otherwise, there is another level to continue onto
+    else {
+      addTextToRoot(GameText.getLevelCompleteText(myCurrentLevelNumber));
+      myAnimation.stop();
     }
   }
 

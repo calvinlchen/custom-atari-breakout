@@ -20,7 +20,7 @@ public class Block {
     // Create rectangle shape for block
     myShape = new Rectangle(xPosition, yPosition, width, height);
     myShape.setFill(Color.DARKRED);
-    myShape.setStroke(Color.BLACK);
+    myShape.setStroke(Color.WHITE);
     myShape.setStrokeWidth(1);
 
     myHealth = healthCount;

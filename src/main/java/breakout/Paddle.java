@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 public class Paddle {
   public static final int PADDLE_WIDTH = 150;
   public static final int PADDLE_HEIGHT = 10;
-  public static final int PADDLE_SPEED = 25;
+  public static final int PADDLE_SPEED = 30;
 
   // start position of the paddle for each round
   private final int start_x;  // middle of scene (horizontally)

@@ -9,8 +9,8 @@ import javafx.scene.image.ImageView;
  * Defines the ball which bounces off the paddle and is used to break game blocks.
  */
 public class Ball {
-  public static final int BALL_SPEED = 210;
-  public static final int BALL_SIZE = 28;
+  public static final int BALL_SPEED = 240;
+  public static final int BALL_SIZE = 30;
 
   // JFX representation on the screen
   private final ImageView myView;

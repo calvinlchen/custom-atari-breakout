@@ -268,29 +268,33 @@ public class GameManager {
       myPaddle.moveLeft();
     }
     if (code == KeyCode.SPACE) {
-      // If game hasn't started, then pressing space opens first level
-      if (myCurrentLevelNumber == 0) {
-        startLevel(myLevelNumbers.getFirst());
-      }
-      // If a level has been completed, then pressing space initializes the next level
-      else if (checkLevelComplete()) {
-        int nextLevelNumber = getNextLevelNumber();
-        // Unless there are no more levels, then it redirects to start screen to restart game
-        if (nextLevelNumber < 0) {
-          startScreen();
-        }
-        else {
-          startLevel(nextLevelNumber);
-        }
-      }
-      // If the player has already lost, then pressing space goes back to the start screen
-      else if (checkPlayerLost()) {
+      handleSpaceBar();
+    }
+  }
+
+  private void handleSpaceBar() {
+    // If game hasn't started, then pressing space opens first level
+    if (myCurrentLevelNumber == 0) {
+      startLevel(myLevelNumbers.getFirst());
+    }
+    // If a level has been completed, then pressing space initializes the next level
+    else if (checkLevelComplete()) {
+      int nextLevelNumber = getNextLevelNumber();
+      // Unless there are no more levels, then it redirects to start screen to restart game
+      if (nextLevelNumber < 0) {
         startScreen();
       }
-      // During a level, press space to set any non-moving balls into motion
       else {
-        setStillBallsInMotion();
+        startLevel(nextLevelNumber);
       }
+    }
+    // If the player has already lost, then pressing space goes back to the start screen
+    else if (checkPlayerLost()) {
+      startScreen();
+    }
+    // During a level, press space to set any non-moving balls into motion
+    else {
+      setStillBallsInMotion();
     }
   }
 

@@ -57,23 +57,22 @@ public class GameManager {
     mySceneRoot = new Group();
 
     // Text for game instructions
-    Text titleText = new Text(
-        """
+    String startInstructions = """
         Welcome to Basketball Bouncer!
 
         Break as many blocks with the ball as you can to score points.
         If the ball hits the bottom edge, you lose a life!
-        (You start with """ + START_LIVES + """
-         lives.)
+        (You start with %d lives.)
 
         Move the paddle with your left and right arrow keys
         so that the ball doesn't hit the floor.
 
-        High score: """ + myHighScore + """
+        High score: %d
 
         Press SPACE to start!
-        """
-    );
+        """.formatted(START_LIVES, myHighScore);
+
+    Text titleText = new Text(startInstructions);
 
     titleText.setFill(Color.WHITE);
     titleText.setX(50);  // adjust for positioning
@@ -165,6 +164,21 @@ public class GameManager {
     // Only run step methods if not on the start screen
     if (myCurrentLevelNumber > 0) {
       if (checkLevelComplete()) {
+        // Text for game instructions
+        String continueInstructions = """
+        Level %d complete!
+        
+        Press SPACE to continue
+        """.formatted(myCurrentLevelNumber);
+
+        Text text = new Text(continueInstructions);
+
+        text.setFill(Color.WHITE);
+        text.setX(50);  // adjust for positioning
+        text.setY(100);
+        text.setFont(Font.font(24)); // choose a bigger font if you like
+
+        mySceneRoot.getChildren().add(text);
         myAnimation.stop();
       }
 

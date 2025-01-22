@@ -5,6 +5,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class GameText {
+
+  public static final int FONT_SIZE_A = 24;
+  public static final int FONT_SIZE_B = 32;
+
   public static Text getStartScreenText(int numLives, int highScore) {
     // Text for game instructions
     String startInstructions = """
@@ -27,7 +31,7 @@ public class GameText {
     titleText.setFill(Color.WHITE);
     titleText.setX(50);
     titleText.setY(100);
-    titleText.setFont(Font.font(24));
+    titleText.setFont(Font.font(FONT_SIZE_A));
 
     return titleText;
   }
@@ -45,7 +49,7 @@ public class GameText {
     text.setFill(Color.WHITE);
     text.setX(50);
     text.setY(100);
-    text.setFont(Font.font(32));
+    text.setFont(Font.font(FONT_SIZE_B));
 
     return text;
   }
@@ -93,7 +97,7 @@ public class GameText {
     text.setFill(Color.WHITE);
     text.setX(50);
     text.setY(100);
-    text.setFont(Font.font(32));
+    text.setFont(Font.font(FONT_SIZE_B));
 
     return text;
   }

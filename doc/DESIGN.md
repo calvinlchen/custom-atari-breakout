@@ -5,7 +5,6 @@
 ## Design Goals
 * Allow for new types of level obstacles to be added via new classes containing their own methods for how they interact with other game objects (such as Balls).
 * Aim for minimal, single-purpose methods, within each class
-* 
 
 ## High-Level Design
 * The Main class initializes the program.

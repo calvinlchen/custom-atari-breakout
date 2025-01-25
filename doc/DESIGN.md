@@ -3,11 +3,9 @@
 
 
 ## Design Goals
-* Create separate classes as needed for different object types
-* Ensure that methods are relatively minimal
-* Reduce code repetition
-* Allow new features to be implemented without unnecessary complications
-* Ensure a functional block-breaker game which behaves according to user expectation
+* Allow for new types of level obstacles to be added via new classes containing their own methods for how they interact with other game objects (such as Balls).
+* Aim for minimal, single-purpose methods, within each class
+* 
 
 ## High-Level Design
 * The Main class initializes the program.
@@ -40,15 +38,19 @@
   the README and below. The code may not function properly if invalid data is provided.
 
 ## Changes from the Plan
-* Unfortunately, I was not able to implement many of the extra features from the plan. I feel that
+* I was not able to implement many of the extra features from the plan. I feel that
   most of them would have been possible to implement given my design, except I have run out of time.
+    * Special paddle actions would have been handled within the Paddle class. For example, bouncing differently depending on where the ball made contact would be done via new method calls wtihin checkAndBounceBall() in the Paddle class. The new methods would check where on the paddle the ball was and "bounce" it correctly by changing the ball's velocity. Catching and releasing the ball on command could be handled by calling methods from CatchAndReleasePaddle, a subclass of Paddle that would replace the myPaddle object (in GameManager) when the power-up was active.
+    * Unbreakable blocks would have been a subclass of the Block class called UnbreakableBlock. While the main Block class decrements its health in hitBlockActions() (the method that runs when a block is hit by a ball), this method would have been overriden in the UnbreakableBlock class to not decrement the health of the block or change its color when hit but to still call bounceBall() within hitBlockActions() as before. These blocks would not be stored in myBlocks, but in another list such as mySpecialBlocks in GameManager, so that the level would still end when myBlocks becomes empty. Power-up blocks would also be created as subclasses of the Block class; their hitBlockActions() would likely involve utilizing setter methods of the GameManager class, such as a method to replace the paddle in GameManager to initiate the catch-and-release paddle.
+    * The extra ball would have been introduced into the game in much the same way as the first ball. A new simple method would be made in GameManager which calls createBall() and adds it to myBalls and to mySceneRoot. It would not be in motion until space was pressed, which was already coded in handleSpacebar().
+    * The "shield" would have been a special Block type (most likely another subclass of Block) which is initialized with a health of 1 and a specific x-y size and placement along the bottom edge of the window based on the scene width and height. They would be added to the same List as unbreakable blocks (see above).
+    * The 1-9 cheat key could have easily called startLevel(i) in GameManager, where i is the level number specified by the key pressed. A check would take place within a new method to ensure that i is contained within myLevelNumbers (the list of level numbers loaded into the program).
 * My code did not implement a "Round"/Level class that stores a score. Instead, it utilizes
-  GameManager and LevelMap, which separately store the current player statistics and the level block
-  data and other level information, respectively.
+  GameManager and LevelMap, which separately store the current game/player statistics and the level block objects, respectively.
 
 ## How to Add New Levels
 * Add a block map to \resources\maps titled lvl_[level number].txt
-  * level number must be positive and in two-digit format (01, 02, etc.) and cannot exceed 99.
+  * level number must be a positive int in two-digit format (01, 02, etc.) and less than 100.
   * Blocks are represented within the file by their health values (as positive integers), and spaces
     are represented by zeros. These integers are separated by spaces. The in-game layout will match
     the layout of integers in the file such that the rows and columns match. However, every row must

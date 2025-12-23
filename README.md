@@ -1,8 +1,9 @@
 # breakout
 ## Calvin Chen
 
+### Description
 
-This project implements the game of Breakout with multiple levels.
+Custom Java implementation of the classic Breakout arcade game featuring multi-level play, file-driven level and color definitions, and dynamically sized blocks that adapt to each map layout.
 
 ### Timeline
 
